@@ -1,4 +1,5 @@
 EXP 1
+Ciudades Frecuencia_aparicion_valor_minimo_local
 4 1.0
 5 1.0
 6 1.0
