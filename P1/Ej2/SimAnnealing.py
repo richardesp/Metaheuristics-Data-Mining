@@ -1,7 +1,7 @@
 import random
 import math
 from TSPGenerator import generador
-from colddown_functions import default_cooldown_func, non_monotonic_adaptive_cooldown_func
+from cooldown_functions import default_cooldown_func, non_monotonic_adaptive_cooldown_func
 
 def evaluarSolucion(datos, solucion):
     longitud = 0
