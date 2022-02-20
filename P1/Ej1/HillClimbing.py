@@ -73,7 +73,7 @@ def main():
 
     frequencies_array = []
 
-    with open("ej1_experiment.dat", "a") as descriptor_file:
+    with open("ej1_experiment.dat", "w") as descriptor_file:
 
         for n_cities in range(exp_len_min, exp_len_max + 1):
 
@@ -120,7 +120,7 @@ def main():
             print("Solucion final de la ruta optima encontrada: ",mejor_s[0])
             print("Longitud de la ruta final optima encontrada: ",mejor_s[1])
 
-            #descriptor_file.write(f"{len(datos)} {get_laplace_probability(frequencies_array, mejor_s[1])}\n")
+            descriptor_file.write(f"{len(datos)} {get_laplace_probability(frequencies_array, mejor_s[1])}\n")
 
 if __name__ == "__main__":
     main()
