@@ -73,7 +73,7 @@ def main():
 
     frequencies_array = []
 
-    with open("ej1_experiment.dat", "w") as descriptor_file:
+    with open("ej1_frecuencia_aparicion_valorlocal.txt", "a") as descriptor_file:
 
         for n_cities in range(exp_len_min, exp_len_max + 1):
 
@@ -94,7 +94,7 @@ def main():
 
             frequencies_array.clear()
 
-            for i in range(10):
+            for i in range(500):
                 s=hillClimbing(datos)
 
                 # Voy agregando las frecuencias
