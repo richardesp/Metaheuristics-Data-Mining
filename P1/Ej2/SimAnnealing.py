@@ -58,7 +58,7 @@ def simAnnealing(datos,t0):
         # Función para descender la temperatura
         #t=0.99*t
 
-        t = non_monotonic_adaptive_cooldown_func(longitud, vecino[1], t)
+        t = quadratic_multiplicative_cooling(t, it)
 
         print("Longitud de la ruta: ", longitud)
         print("Temperatura: ", t)
@@ -73,11 +73,9 @@ def main():
     ]
     t0=10 # Temperatura inicial para comenzar el descenso del valor
 
-    """
-    n_cities = 6
+    n_cities = 20
 
     datos = generador(n_cities)
-    """
 
     s=simAnnealing(datos,t0)
     print("--------------")

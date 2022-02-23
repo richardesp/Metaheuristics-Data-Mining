@@ -2,6 +2,24 @@ import random
 from TSPGenerator import generador
 from utils import get_laplace_probability
 
+def aplicarPerturbacion(solucion, datos, step_size):
+    vecino_perturbado = solucion.copy()
+    aux_solucion = solucion.copy()
+
+    for i in range(step_size):
+
+        # Voy eliminando las ciudades que haya alterado para la perturbación
+        x = aux_solucion[random.randint(0, len(aux_solucion) - 1)]
+        aux_solucion.remove(x)
+        y = aux_solucion[random.randint(0, len(aux_solucion) - 1)]
+        aux_solucion.remove(y)
+
+        vecino_perturbado[x] = solucion[y]
+        vecino_perturbado[y] = solucion[x]
+
+    return vecino_perturbado
+
+
 
 def evaluarSolucion(datos, solucion):
     longitud = 0
@@ -42,7 +60,7 @@ def obtenerMejorVecino(solucion, datos):
 """
 
 
-def hillClimbing(datos):
+def hillClimbing(datos, iterated_local_search=False, step_size=0, iterations=0):
     l = len(datos)
     ##Creamos una solucion aleatoria
     ciudades = list(range(l))
@@ -62,6 +80,34 @@ def hillClimbing(datos):
         print("Longitud de la ruta: ", longitud)
         vecino = obtenerMejorVecino(solucion, datos)
 
+    if iterated_local_search:
+        print("Aplicando iterated local search")
+
+        with open("ej1_mejora_longitud_dado_niteraciones_iterated_local_search.txt", "w") as descriptor_file:
+            for i in range(iterations):
+
+                vecino_perturbado = aplicarPerturbacion(vecino[0], datos, step_size=step_size)
+                old_longitud = longitud
+                old_solucion = vecino[0]
+
+                solucion = vecino_perturbado
+                longitud = evaluarSolucion(datos, solucion)
+
+                print("Longitud de la ruta: ", longitud)
+                ##Obtenemos el mejor vecino hasta que no haya vecinos mejores
+                vecino = obtenerMejorVecino(solucion, datos)
+                while vecino[1] < longitud:
+                    solucion = vecino[0]
+                    longitud = vecino[1]
+                    print("Longitud de la ruta: ", longitud)
+                    vecino = obtenerMejorVecino(solucion, datos)
+
+                if old_longitud < longitud:
+                    longitud = old_longitud
+                    solucion = old_solucion
+
+                descriptor_file.write(f"{i} {longitud}\n")
+
     return solucion, longitud
 
 
@@ -70,7 +116,8 @@ def main():
     exp_len_max = 20
 
     EXECUTE_EXPERIMENT_1 = False
-    EXECUTE_EXPERIMENT_2 = True
+    EXECUTE_EXPERIMENT_2 = False
+    EXECUTE_EXPERIMENT_3 = True
 
     frequencies_array = []
 
@@ -155,6 +202,25 @@ def main():
                         mejor_s = s
 
                 descriptor_file.write(f"{i} {mejor_s[1]}\n")
+
+    if EXECUTE_EXPERIMENT_3:
+        """
+        En este experimento aplicaremos una pequeña perturbación. Crearemos una variable llamada step_size
+        que nos indicará cuantos vecinos podremos llegar a perturbar, mínimo podremos perturbar 2 ciudades 
+        y como máximo N/3 ciudades
+        
+        """
+
+        n_ciudades = 12  # Número considerable para ver la mejora existente dado el número de iteraciones
+        max_iteraciones = 100
+
+        step_size = 3
+
+        # El intervalo para aplicar perturbaciones será: [2, N/3]
+        assert 2 <= step_size <= n_ciudades / 3
+
+        datos = generador(n_ciudades)
+        s = hillClimbing(datos, True, step_size, max_iteraciones)
 
 
 if __name__ == "__main__":

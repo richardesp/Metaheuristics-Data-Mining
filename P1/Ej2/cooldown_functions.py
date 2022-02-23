@@ -11,7 +11,6 @@ def default_cooldown_func(current_temperature: float) -> float:
 
     return 0.99 * current_temperature
 
-
 def logarithmic_cooldown_func(current_temperature: float, it: int, alpha: float) -> float:
     """
     Logarithmic function for calculate the current temperature to decrease
@@ -38,8 +37,10 @@ def geometric_cooldown_func(current_temperature: float, it: int, alpha: float) -
     return pow(alpha, it) * current_temperature
 
 
-def non_monotonic_adaptive_cooldown_func(best_length: int, current_length: int, current_temperature) -> float:
+def non_monotonic_adaptive_cooldown_func(best_length: int, current_length: int, current_temperature: float) -> float:
     """
+    NOT WORKING:
+
     http://what-when-how.com/artificial-intelligence/a-comparison-of-cooling-schedules-for-simulated-annealing-artificial-intelligence/
 
     :param best_length:
