@@ -2,12 +2,12 @@ import random
 from TSPGenerator import generador
 from utils import get_laplace_probability
 
+
 def aplicarPerturbacion(solucion, datos, step_size):
     vecino_perturbado = solucion.copy()
     aux_solucion = solucion.copy()
 
     for i in range(step_size):
-
         # Voy eliminando las ciudades que haya alterado para la perturbación
         x = aux_solucion[random.randint(0, len(aux_solucion) - 1)]
         aux_solucion.remove(x)
@@ -18,7 +18,6 @@ def aplicarPerturbacion(solucion, datos, step_size):
         vecino_perturbado[y] = solucion[x]
 
     return vecino_perturbado
-
 
 
 def evaluarSolucion(datos, solucion):
@@ -83,7 +82,8 @@ def hillClimbing(datos, iterated_local_search=False, step_size=0, iterations=0):
     if iterated_local_search:
         print("Aplicando iterated local search")
 
-        with open("ej1_mejora_longitud_dado_niteraciones_iterated_local_search.txt", "w") as descriptor_file:
+        with open(f"ej1_mejora_longitud_dado_niteraciones_iterated_local_search_perturbando_{step_size}_vecinos.txt",
+                  "a") as descriptor_file:
             for i in range(iterations):
 
                 vecino_perturbado = aplicarPerturbacion(vecino[0], datos, step_size=step_size)
@@ -106,7 +106,7 @@ def hillClimbing(datos, iterated_local_search=False, step_size=0, iterations=0):
                     longitud = old_longitud
                     solucion = old_solucion
 
-                descriptor_file.write(f"{i} {longitud}\n")
+                descriptor_file.write(f"{i + 1} {longitud}\n")
 
     return solucion, longitud
 
@@ -116,8 +116,8 @@ def main():
     exp_len_max = 20
 
     EXECUTE_EXPERIMENT_1 = False
-    EXECUTE_EXPERIMENT_2 = False
-    EXECUTE_EXPERIMENT_3 = True
+    EXECUTE_EXPERIMENT_2 = True
+    EXECUTE_EXPERIMENT_3 = False
 
     frequencies_array = []
 
@@ -199,7 +199,7 @@ def main():
 
                     # Almacenamos el mejor valor de longitud encontrado
                     if s[1] < mejor_s[1]:
-                        mejor_s = s
+                        mejor_s = s.copy()
 
                 descriptor_file.write(f"{i} {mejor_s[1]}\n")
 
@@ -211,10 +211,10 @@ def main():
         
         """
 
-        n_ciudades = 12  # Número considerable para ver la mejora existente dado el número de iteraciones
+        n_ciudades = 30  # Número considerable para ver la mejora existente dado el número de iteraciones
         max_iteraciones = 100
 
-        step_size = 3
+        step_size = int(n_ciudades/3)
 
         # El intervalo para aplicar perturbaciones será: [2, N/3]
         assert 2 <= step_size <= n_ciudades / 3
