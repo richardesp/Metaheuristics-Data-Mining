@@ -58,11 +58,13 @@ def simAnnealing(datos,t0):
         # Función para descender la temperatura
         #t=0.99*t
 
-        t = quadratic_multiplicative_cooling(t, it)
+
+
+        t = quadratic_multiplicative_cooling(t, it, fichero_temperaturas)
 
         print("Longitud de la ruta: ", longitud)
         print("Temperatura: ", t)
-    return solucion, longitud
+        return solucion, longitud
 
 def main():
     datos = [
