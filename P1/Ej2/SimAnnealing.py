@@ -1,7 +1,7 @@
 import random
 import math
 from TSPGenerator import generador
-from cooldown_functions import default_cooldown_func, non_monotonic_adaptive_cooldown_func
+from cooldown_functions import default_cooldown_func, non_monotonic_adaptive_cooldown_func, quadratic_multiplicative_cooling
 
 def evaluarSolucion(datos, solucion):
     longitud = 0
@@ -72,6 +72,9 @@ def main():
         [300, 500, 400, 0]
     ]
     t0=10 # Temperatura inicial para comenzar el descenso del valor
+
+#, fichero_temperaturas
+
 
     n_cities = 20
 
