@@ -1,7 +1,7 @@
 import random
 import math
 from TSPGenerator import generador
-from cooldown_functions import default_cooldown_func, non_monotonic_adaptive_cooldown_func, quadratic_multiplicative_cooling
+from cooldown_functions import *
 
 def evaluarSolucion(datos, solucion):
     longitud = 0
@@ -49,6 +49,10 @@ def simAnnealing(datos,t0):
         if incremento < 0:
             longitud = vecino[1]
             solucion = vecino[0]
+
+        # Si la probabilidad dada la diferencia de leyes térmicas es inferior al valor entre 0 y 1 (prob)
+        # entonces cogeré ese vecino pese a que sea peor o mejor, da igual, va en función de la diferencia que haya
+        # Mirar temario de teoría
         elif random.random() < math.exp(-abs(incremento) / t):
             longitud = vecino[1]
             solucion = vecino[0]
@@ -58,7 +62,7 @@ def simAnnealing(datos,t0):
         # Función para descender la temperatura
         #t=0.99*t
 
-        t = quadratic_multiplicative_cooling(t, it)
+        t = quadratic_multiplicative_cooling(t, it, .0000000000000000001)
 
         print("Longitud de la ruta: ", longitud)
         print("Temperatura: ", t)

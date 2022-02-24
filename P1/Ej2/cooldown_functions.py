@@ -11,6 +11,7 @@ def default_cooldown_func(current_temperature: float) -> float:
 
     return 0.99 * current_temperature
 
+
 def logarithmic_cooldown_func(current_temperature: float, it: int, alpha: float) -> float:
     """
     Logarithmic function for calculate the current temperature to decrease

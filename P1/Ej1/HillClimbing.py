@@ -61,7 +61,7 @@ def obtenerMejorVecino(solucion, datos):
 
 def hillClimbing(datos, iterated_local_search=False, step_size=0, iterations=0):
     l = len(datos)
-    ##Creamos una solucion aleatoria
+    # Creamos una solucion aleatoria
     ciudades = list(range(l))
     solucion = []
     for i in range(l):
