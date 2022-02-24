@@ -178,7 +178,7 @@ def main():
         # Experimento 2 para generar la gráfica de evolución del mejor coste, en función del número de iteraciones para un TSP dado
         with open("ej1_mejora_longitud_dado_niteraciones.txt", "a") as descriptor_file:
 
-            n_ciudades = 10  # Número considerable para ver la mejora existente dado el número de iteraciones
+            n_ciudades = 30  # Número considerable para ver la mejora existente dado el número de iteraciones
             datos = generador(n_ciudades)
 
             # Búsqueda de la variación de la longitud, incrementando de 10 en 10 el número de iteraciones
@@ -187,21 +187,24 @@ def main():
             max_iteraciones = 100
             incremento = 1
 
+            mejor_s = None
+            mejor_longitud = None
+
             for i in range(1, max_iteraciones + 1, incremento):
 
-                # Limpiamos el mejor valor de longitud encontrado previamente
-                mejor_s = None
                 for j in range(i):
                     s = hillClimbing(datos)
 
                     if mejor_s is None:
                         mejor_s = s
+                        mejor_longitud = mejor_s[1]
 
                     # Almacenamos el mejor valor de longitud encontrado
                     if s[1] < mejor_s[1]:
                         mejor_s = s
+                        mejor_longitud = mejor_s[1]
 
-                descriptor_file.write(f"{i} {mejor_s[1]}\n")
+                descriptor_file.write(f"{i} {mejor_longitud}\n")
 
     if EXECUTE_EXPERIMENT_3:
         """
@@ -214,13 +217,13 @@ def main():
         n_ciudades = 30  # Número considerable para ver la mejora existente dado el número de iteraciones
         max_iteraciones = 100
 
-        step_size = int(n_ciudades/3)
+        step_size = int(n_ciudades / 3)
 
         # El intervalo para aplicar perturbaciones será: [2, N/3]
         assert 2 <= step_size <= n_ciudades / 3
 
         datos = generador(n_ciudades)
-        s = hillClimbing(datos, True, step_size, max_iteraciones)
+        s = hillClimbing(datos, iterated_local_search=True, step_size=step_size, iterations=max_iteraciones)
 
 
 if __name__ == "__main__":
