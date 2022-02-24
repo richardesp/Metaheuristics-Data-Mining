@@ -61,7 +61,7 @@ def obtenerMejorVecino(solucion, datos):
 
 def hillClimbing(datos, iterated_local_search=False, step_size=0, iterations=0):
     l = len(datos)
-    ##Creamos una solucion aleatoria
+    # Creamos una solucion aleatoria
     ciudades = list(range(l))
     solucion = []
     for i in range(l):
@@ -187,21 +187,24 @@ def main():
             max_iteraciones = 100
             incremento = 1
 
+            mejor_s = None
+            mejor_longitud = None
+
             for i in range(1, max_iteraciones + 1, incremento):
 
-                # Limpiamos el mejor valor de longitud encontrado previamente
-                mejor_s = None
                 for j in range(i):
                     s = hillClimbing(datos)
 
                     if mejor_s is None:
                         mejor_s = s
+                        mejor_longitud = mejor_s[1]
 
                     # Almacenamos el mejor valor de longitud encontrado
                     if s[1] < mejor_s[1]:
-                        mejor_s = s.copy()
+                        mejor_s = s
+                        mejor_longitud = mejor_s[1]
 
-                descriptor_file.write(f"{i} {mejor_s[1]}\n")
+                descriptor_file.write(f"{i} {mejor_longitud}\n")
 
     if EXECUTE_EXPERIMENT_3:
         """
@@ -214,13 +217,13 @@ def main():
         n_ciudades = 30  # Número considerable para ver la mejora existente dado el número de iteraciones
         max_iteraciones = 100
 
-        step_size = int(n_ciudades/3)
+        step_size = int(n_ciudades / 3)
 
         # El intervalo para aplicar perturbaciones será: [2, N/3]
         assert 2 <= step_size <= n_ciudades / 3
 
         datos = generador(n_ciudades)
-        s = hillClimbing(datos, True, step_size, max_iteraciones)
+        s = hillClimbing(datos, iterated_local_search=True, step_size=step_size, iterations=max_iteraciones)
 
 
 if __name__ == "__main__":
