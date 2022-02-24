@@ -60,5 +60,4 @@ def quadratic_multiplicative_cooling(current_temperature: float, cycle: int):
     :param cycle:
     :return:
     """
-
-    return current_temperature / (1 + 0.01 * pow(cycle, 2))
+    return current_temperature / (1 + 0.00001 * pow(cycle, 2))

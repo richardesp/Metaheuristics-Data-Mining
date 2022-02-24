@@ -68,6 +68,9 @@ def simAnnealing(datos,t0):
 
         print("Longitud de la ruta: ", longitud)
         print("Temperatura: ", t)
+
+        fichero.close()
+
     return solucion, longitud
 
 def main():
