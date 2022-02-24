@@ -52,8 +52,8 @@ def non_monotonic_adaptive_cooldown_func(best_length: int, current_length: int, 
 
     return (1 + ((current_length - best_length) / current_length)) * current_temperature
 
-#hola
-def quadratic_multiplicative_cooling(current_temperature: float, cycle: int, fichero_temperaturas):
+
+def quadratic_multiplicative_cooling(current_temperature: float, cycle: int):
     """
 
     :param current_temperature:
