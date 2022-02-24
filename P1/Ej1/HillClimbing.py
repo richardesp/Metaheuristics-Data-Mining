@@ -178,7 +178,7 @@ def main():
         # Experimento 2 para generar la gráfica de evolución del mejor coste, en función del número de iteraciones para un TSP dado
         with open("ej1_mejora_longitud_dado_niteraciones.txt", "a") as descriptor_file:
 
-            n_ciudades = 30  # Número considerable para ver la mejora existente dado el número de iteraciones
+            n_ciudades = 10  # Número considerable para ver la mejora existente dado el número de iteraciones
             datos = generador(n_ciudades)
 
             # Búsqueda de la variación de la longitud, incrementando de 10 en 10 el número de iteraciones
@@ -199,7 +199,7 @@ def main():
 
                     # Almacenamos el mejor valor de longitud encontrado
                     if s[1] < mejor_s[1]:
-                        mejor_s = s.copy()
+                        mejor_s = s
 
                 descriptor_file.write(f"{i} {mejor_s[1]}\n")
 
