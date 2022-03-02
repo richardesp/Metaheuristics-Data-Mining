@@ -40,7 +40,6 @@ def simAnnealing(datos,t0):
 
     it=0
     tmax=t0
-    tmin=0.05
     recalentamiento=3
     margen=recalentamiento/6
     while t > 0.05:
@@ -56,7 +55,6 @@ def simAnnealing(datos,t0):
             solucion = vecino[0]
 
         if tmax-t >= recalentamiento+margen:
-            tmin=t
             tmax=t+recalentamiento
             t=t+recalentamiento
 
