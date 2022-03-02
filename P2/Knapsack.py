@@ -1,4 +1,5 @@
 import random
+from utils import seleccionar_individuo
 
 """
     Anotaciones del profesor:
@@ -94,6 +95,55 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
 
     #Seleccionar padres mediante torneo tamaño k
 
+    CRUCE_1_CUT = True
+
+    # Cruce de un tajo con dos progenitores
+    if CRUCE_1_CUT:
+        # Como es un cruce con solo dos progenitores, necesitaré solo dos mejores candidatos de torneos de k individuos
+
+        n_progenitores = 2
+        progenitores = []
+
+        for i in range(n_progenitores):
+            progenitores.append(seleccionar_individuo(poblacion, k))
+
+        tajo = random.randint(0, len(progenitores[0][0]) - 1)
+
+        posible_cruce = []
+
+        # Cruzar padres con probabilidad cProb
+
+        # ANTES ESTABA random.randint(1,100)
+        if random.randint(0, 1) <= cProb:
+
+            # Estos elementos del tajo corresponden al progenitor 0
+            for i in range(tajo + 1):
+                posible_cruce.append(progenitores[0][0][i])
+
+            # Estos elementos del tajo corresponden al progenitor 1
+            for i in range(tajo + 1, len(progenitores[1][0])):
+                posible_cruce.append(progenitores[1][0][i])
+
+            # Si se da el cruze, lo agrego a la solucion actual para retornarlo (nuevo hijo)
+
+            # Le pongo None para que posteiormente se evalue la solucion de esta nueva la mutacion
+            poblacion.append([posible_cruce, None])
+
+        # Mutar padres con probabilidad mProb
+        if random.randint(0, 1) <= mProb:
+            # Va a mutar un bit de los dos padres
+            for i in range(n_progenitores):
+
+                # Los progenitores se modifican por referencia de la lista de poblacion
+
+                # Seleccionamos el bit que vamos a modificar del progenitor i-esimo
+                bit_mutable = random.randint(0, len(progenitores[i][0]) - 1)
+
+                # Complemetamos el bit previo que tenia el progenitor i-esimo
+                progenitores[i][0][bit_mutable] = int(not progenitores[i][0][bit_mutable])
+
+
+
     #Cruzar padres con probabilidad cProb
     #if random.randint(1,100) <= cProb:
 
@@ -101,17 +151,19 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
     #if random.randint(1,100) <= mProb:
 
 
+    # Antes estaba poblacion, pero habria que retornar las soluciones sin mas porque en el main despues se evaluan
+    # estas soluciones para agregarlas a las poblaciones como pares de tuplas con el profit y la distribucion de la mochila
     return poblacion #Devolver la nueva poblacion (sin evaluar)
 
 def main():
     pesos = [ 34, 45, 14, 76, 32 ]
     precios = [ 340, 210, 87, 533, 112 ]
     pesoMax = 100 #Peso máximo que se puede poner en la mochila
-    nSoluciones = 25 #Tamaño de la poblacion
-    maxGeneraciones = 1 #Numero de generaciones
+    nSoluciones = 8 #Tamaño de la poblacion
+    maxGeneraciones = 3 #Numero de generaciones
     k = 3 #Tamaño torneo selector de padres
-    cProb = 0.7 #Probabilidad de cruce
-    mProb = 0.1 #Probabilidad de mutacion
+    cProb = 0.7 #Probabilidad de cruce 0.7
+    mProb = 0.1 #Probabilidad de mutacion 0.1
 
     """
     Debemos ver trucos para saber como seleccionar el nSoluciones, dado el problema. 
@@ -123,6 +175,7 @@ def main():
 
     l=len(pesos)
     ##Creamos n soluciones aleatorias que sean válidas
+    # Cada elemento de poblacion son individuos (combinaciones de soluciones, donde fitness es el profit de la mochila)
     poblacion = []
     for i in range(nSoluciones):
         objetos = list(range(l))
@@ -146,8 +199,12 @@ def main():
     while it < maxGeneraciones:
         nSoluciones = aplicarOperadoresGeneticos(poblacion,k,cProb,mProb)
         #Modelo generacional
+
+        # POBLACION ESTA VACIO, VUELVO A CREARLO DE NUEVO
         poblacion = []
         for solucion in nSoluciones:
+
+            # Genero nuevas posibles poblaciones para intentar mejorar
             poblacion.append([solucion[0],evaluarSolucion(solucion[0],precios,pesos,pesoMax)])
         it+=1
 
