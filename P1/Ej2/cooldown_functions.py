@@ -53,6 +53,19 @@ def non_monotonic_adaptive_cooldown_func(best_length: int, current_length: int, 
     return (1 + ((current_length - best_length) / current_length)) * current_temperature
 
 
+def quadratic_multiplicative_cooling(current_temperature: float, cycle: int, alpha: float = .0001):
+    """
+
+    :param alpha:
+    :param current_temperature:
+    :param cycle:
+    :return:
+    """
+    # fichero_temperaturas.write(f"  "):
+
+    return current_temperature / (1 + alpha * pow(cycle, 2))
+
+
 def quadratic_multiplicative_cooling(current_temperature: float, cycle: int):
     """
 
