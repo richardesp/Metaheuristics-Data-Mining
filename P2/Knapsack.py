@@ -79,91 +79,101 @@ from utils import seleccionar_individuo
         
 """
 
+
 def evaluarSolucion(solucion, precios, pesos, pesoMax):
     precio = 0
     peso = 0
     for i in range(len(solucion)):
-        precio += precios[i]*solucion[i]
-        peso += pesos[i]*solucion[i]
+        precio += precios[i] * solucion[i]
+        peso += pesos[i] * solucion[i]
 
-    if peso > pesoMax: # Debemos maximizar la solucion
+    if peso > pesoMax:  # Debemos maximizar la solucion
         return 0
     else:
         return precio
 
-def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
 
-    #Seleccionar padres mediante torneo tamaño k
+def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
+    # Seleccionar padres mediante torneo tamaño k
 
     CRUCE_1_CUT = True
 
     # Cruce de un tajo con dos progenitores
+
+    """
+    No sé si es correcto borrar la anterior población y meter individuos en función de la anterior (modelo generacional, el que nos piden)
+    """
     if CRUCE_1_CUT:
         # Como es un cruce con solo dos progenitores, necesitaré solo dos mejores candidatos de torneos de k individuos
 
-        n_progenitores = 2
-        progenitores = []
+        # El tamaño de la nueva población será aleatorio, basado en el tamaño anterior
+        # n_poblacion_nueva = random.randint(int(poblacion.__len__() / 2), poblacion.__len__()) Esto no sería correcta ya que estadísticamente convergería a 0 elementos la población
 
-        for i in range(n_progenitores):
-            progenitores.append(seleccionar_individuo(poblacion, k))
+        n_poblacion_nueva = poblacion.__len__()
+        poblacion_nueva = []
 
-        tajo = random.randint(0, len(progenitores[0][0]) - 1)
+        for _ in range(n_poblacion_nueva):
+            n_progenitores = 2
+            progenitores = []
 
-        posible_cruce = []
-
-        # Cruzar padres con probabilidad cProb
-
-        # ANTES ESTABA random.randint(1,100)
-        if random.randint(0, 1) <= cProb:
-
-            # Estos elementos del tajo corresponden al progenitor 0
-            for i in range(tajo + 1):
-                posible_cruce.append(progenitores[0][0][i])
-
-            # Estos elementos del tajo corresponden al progenitor 1
-            for i in range(tajo + 1, len(progenitores[1][0])):
-                posible_cruce.append(progenitores[1][0][i])
-
-            # Si se da el cruze, lo agrego a la solucion actual para retornarlo (nuevo hijo)
-
-            # Le pongo None para que posteiormente se evalue la solucion de esta nueva la mutacion
-            poblacion.append([posible_cruce, None])
-
-        # Mutar padres con probabilidad mProb
-        if random.randint(0, 1) <= mProb:
-            # Va a mutar un bit de los dos padres
             for i in range(n_progenitores):
+                progenitores.append(seleccionar_individuo(poblacion, k))
 
-                # Los progenitores se modifican por referencia de la lista de poblacion
+            tajo = random.randint(0, len(progenitores[0][0]) - 1)
 
-                # Seleccionamos el bit que vamos a modificar del progenitor i-esimo
-                bit_mutable = random.randint(0, len(progenitores[i][0]) - 1)
+            posible_cruce = []
 
-                # Complemetamos el bit previo que tenia el progenitor i-esimo
-                progenitores[i][0][bit_mutable] = int(not progenitores[i][0][bit_mutable])
+            # Cruzar padres con probabilidad cProb
 
+            # ANTES ESTABA random.randint(1,100)
+            if random.uniform(0, 1) <= cProb:
 
+                # Estos elementos del tajo corresponden al progenitor 0
+                for i in range(tajo + 1):
+                    posible_cruce.append(progenitores[0][0][i])
 
-    #Cruzar padres con probabilidad cProb
-    #if random.randint(1,100) <= cProb:
+                # Estos elementos del tajo corresponden al progenitor 1
+                for i in range(tajo + 1, len(progenitores[1][0])):
+                    posible_cruce.append(progenitores[1][0][i])
 
-    #Mutar padres con probabilidad mProb
-    #if random.randint(1,100) <= mProb:
+                # Si se da el cruze, lo agrego a la solucion actual para retornarlo (nuevo hijo)
 
+                # Le pongo None para que posteiormente se evalue la solucion de esta nueva la mutacion
+                poblacion_nueva.append([posible_cruce, None])
+
+            # Mutar padres con probabilidad mProb
+            if random.uniform(0, 1) <= mProb:
+
+                # Va a mutar un bit de los dos padres
+                for i in range(n_progenitores):
+                    # Los progenitores se modifican por referencia de la lista de poblacion
+
+                    # Seleccionamos el bit que vamos a modificar del progenitor i-esimo
+                    bit_mutable = random.randint(0, len(progenitores[i][0]) - 1)
+
+                    # Complemetamos el bit previo que tenia el progenitor i-esimo
+                    progenitores[i][0][bit_mutable] = int(not progenitores[i][0][bit_mutable])
+
+    # Cruzar padres con probabilidad cProb
+    # if random.randint(1,100) <= cProb:
+
+    # Mutar padres con probabilidad mProb
+    # if random.randint(1,100) <= mProb:
 
     # Antes estaba poblacion, pero habria que retornar las soluciones sin mas porque en el main despues se evaluan
     # estas soluciones para agregarlas a las poblaciones como pares de tuplas con el profit y la distribucion de la mochila
-    return poblacion #Devolver la nueva poblacion (sin evaluar)
+    return poblacion_nueva  # Devolver la nueva poblacion (sin evaluar)
+
 
 def main():
-    pesos = [ 34, 45, 14, 76, 32 ]
-    precios = [ 340, 210, 87, 533, 112 ]
-    pesoMax = 100 #Peso máximo que se puede poner en la mochila
-    nSoluciones = 8 #Tamaño de la poblacion
-    maxGeneraciones = 3 #Numero de generaciones
-    k = 3 #Tamaño torneo selector de padres
-    cProb = 0.7 #Probabilidad de cruce 0.7
-    mProb = 0.1 #Probabilidad de mutacion 0.1
+    pesos = [34, 45, 14, 76, 32]
+    precios = [340, 210, 87, 533, 112]
+    pesoMax = 100  # Peso máximo que se puede poner en la mochila
+    nSoluciones = 15  # Tamaño de la poblacion
+    maxGeneraciones = 3  # Numero de generaciones
+    k = 3  # Tamaño torneo selector de padres
+    cProb = 0.7  # Probabilidad de cruce 0.7
+    mProb = 0.3  # Probabilidad de mutacion 0.1
 
     """
     Debemos ver trucos para saber como seleccionar el nSoluciones, dado el problema. 
@@ -173,7 +183,7 @@ def main():
     
     """
 
-    l=len(pesos)
+    l = len(pesos)
     ##Creamos n soluciones aleatorias que sean válidas
     # Cada elemento de poblacion son individuos (combinaciones de soluciones, donde fitness es el profit de la mochila)
     poblacion = []
@@ -193,20 +203,27 @@ def main():
             s.append(0)
         for i in solucion:
             s[i] = 1
-        poblacion.append([s,evaluarSolucion(s,precios,pesos,pesoMax)]) # Agrego la poblacion y como de buena es
+        poblacion.append([s, evaluarSolucion(s, precios, pesos, pesoMax)])  # Agrego la poblacion y como de buena es
 
-    it=1
+    it = 1
+
+    print(f"Población inicial: {poblacion}")
     while it < maxGeneraciones:
-        nSoluciones = aplicarOperadoresGeneticos(poblacion,k,cProb,mProb)
-        #Modelo generacional
+        # Cuidado! si el número de individuos de la primera población es reducido y ejecuto muchas iteraciones las
+        # nuevas generaciones, la probabilidad mprob puede provocar una población vacía (preguntar al profesor si lo
+        # que estamos haciendo es correcto)
+        nSoluciones = aplicarOperadoresGeneticos(poblacion, k, cProb, mProb)
+        # Modelo generacional
 
         # POBLACION ESTA VACIO, VUELVO A CREARLO DE NUEVO
         poblacion = []
         for solucion in nSoluciones:
-
             # Genero nuevas posibles poblaciones para intentar mejorar
-            poblacion.append([solucion[0],evaluarSolucion(solucion[0],precios,pesos,pesoMax)])
-        it+=1
+            poblacion.append([solucion[0], evaluarSolucion(solucion[0], precios, pesos, pesoMax)])
+        it += 1
+
+        print(f"Población generada mediante selección generacional en la iteración {it}: {poblacion}")
+
 
 if __name__ == "__main__":
     main()
