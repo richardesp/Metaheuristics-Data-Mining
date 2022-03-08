@@ -187,6 +187,7 @@ def main():
     ##Creamos n soluciones aleatorias que sean válidas
     # Cada elemento de poblacion son individuos (combinaciones de soluciones, donde fitness es el profit de la mochila)
     poblacion = []
+    sbest = [0,0,0,0,0]
     for i in range(nSoluciones):
         objetos = list(range(l))
         solucion = []
@@ -203,6 +204,8 @@ def main():
             s.append(0)
         for i in solucion:
             s[i] = 1
+        if evaluarSolucion( s, precios, pesos, pesoMax) > evaluarSolucion(sbest, precios, pesos, pesoMax):
+            sbest=s
         poblacion.append([s, evaluarSolucion(s, precios, pesos, pesoMax)])  # Agrego la poblacion y como de buena es
 
     it = 1
@@ -220,10 +223,12 @@ def main():
         for solucion in nSoluciones:
             # Genero nuevas posibles poblaciones para intentar mejorar
             poblacion.append([solucion[0], evaluarSolucion(solucion[0], precios, pesos, pesoMax)])
+            if evaluarSolucion(solucion[0], precios, pesos, pesoMax) > evaluarSolucion(sbest, precios, pesos, pesoMax):
+                sbest = solucion[0]
         it += 1
 
         print(f"Población generada mediante selección generacional en la iteración {it}: {poblacion}")
-
+    print(f"Mejor solucion encontrada mediante elitismo: {sbest}, con una puntuacion de: {evaluarSolucion(sbest, precios, pesos, pesoMax)}")
 
 if __name__ == "__main__":
     main()
