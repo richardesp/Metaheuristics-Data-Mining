@@ -9,7 +9,7 @@ def seleccionar_individuo(poblacion: list, k: int) -> list:
 
     for i in range(k):
         individuo = poblacion_aux[random.randint(0, len(poblacion_aux) - 1)]
-        poblacion_aux.remove(individuo)
+        #poblacion_aux.remove(individuo)
         candidatos_torneo.append(individuo)
 
     # Seleccionamos el ganador de los k individuos seleccionados

@@ -112,7 +112,7 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
         n_poblacion_nueva = poblacion.__len__()
         poblacion_nueva = []
 
-        for _ in range(n_poblacion_nueva):
+        for _ in range(n_poblacion_nueva / 2):
             n_progenitores = 2
             progenitores = []
 
@@ -131,7 +131,7 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
                 # Estos elementos del tajo corresponden al progenitor 0
                 for i in range(tajo + 1):
                     posible_cruce.append(progenitores[0][0][i])
-
+                    #posible_cruce.append(progenitores[1][0][i])
                 # Estos elementos del tajo corresponden al progenitor 1
                 for i in range(tajo + 1, len(progenitores[1][0])):
                     posible_cruce.append(progenitores[1][0][i])
@@ -169,11 +169,11 @@ def main():
     pesos = [34, 45, 14, 76, 32]
     precios = [340, 210, 87, 533, 112]
     pesoMax = 100  # Peso máximo que se puede poner en la mochila
-    nSoluciones = 15  # Tamaño de la poblacion
+    nSoluciones = 10  # Tamaño de la poblacion
     maxGeneraciones = 3  # Numero de generaciones
     k = 3  # Tamaño torneo selector de padres
     cProb = 0.7  # Probabilidad de cruce 0.7
-    mProb = 0.3  # Probabilidad de mutacion 0.1
+    mProb = 0.3  # Probabilidad de mutacion 0.3
 
     """
     Debemos ver trucos para saber como seleccionar el nSoluciones, dado el problema. 
