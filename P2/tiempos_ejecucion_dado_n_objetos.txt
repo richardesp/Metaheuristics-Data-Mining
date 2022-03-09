@@ -1,0 +1,5 @@
+Número de objetos (Eje x)    Tiempo de ejecución en segundos (Eje y)
+5                            0.019
+10                           0.021
+20                           0.021
+50                           0.027
