@@ -112,7 +112,8 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
         n_poblacion_nueva = poblacion.__len__()
         poblacion_nueva = []
 
-        for _ in range(n_poblacion_nueva / 2):
+        # Esto debe ser n/2 dado que inserto de 2 en 2
+        for _ in range(int(n_poblacion_nueva / 2)):
             n_progenitores = 2
             progenitores = []
 
@@ -131,7 +132,6 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
                 # Estos elementos del tajo corresponden al progenitor 0
                 for i in range(tajo + 1):
                     posible_cruce.append(progenitores[0][0][i])
-                    #posible_cruce.append(progenitores[1][0][i])
                 # Estos elementos del tajo corresponden al progenitor 1
                 for i in range(tajo + 1, len(progenitores[1][0])):
                     posible_cruce.append(progenitores[1][0][i])
@@ -140,6 +140,27 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
 
                 # Le pongo None para que posteiormente se evalue la solucion de esta nueva la mutacion
                 poblacion_nueva.append([posible_cruce, None])
+
+                # Insertamos el segundo hijo cruzando las mitades inversas
+                posible_cruce = []
+
+                # Estos elementos del tajo corresponden al progenitor 0
+                for i in range(tajo + 1):
+                    posible_cruce.append(progenitores[1][0][i])
+                # Estos elementos del tajo corresponden al progenitor 1
+
+                for i in range(tajo + 1, len(progenitores[1][0])):
+                    posible_cruce.append(progenitores[0][0][i])
+
+                # Si se da el cruze, lo agrego a la solucion actual para retornarlo (nuevo hijo)
+
+                # Le pongo None para que posteiormente se evalue la solucion de esta nueva la mutacion
+                poblacion_nueva.append([posible_cruce, None])
+
+            # Si no se insertan los hijos entonces se insertan los padres
+            else:
+                for i in range(len(progenitores)):
+                    poblacion_nueva.append(progenitores[i])
 
             # Mutar padres con probabilidad mProb
             if random.uniform(0, 1) <= mProb:
@@ -169,8 +190,8 @@ def main():
     pesos = [34, 45, 14, 76, 32]
     precios = [340, 210, 87, 533, 112]
     pesoMax = 100  # Peso máximo que se puede poner en la mochila
-    nSoluciones = 10  # Tamaño de la poblacion
-    maxGeneraciones = 3  # Numero de generaciones
+    nSoluciones = 4  # Tamaño de la poblacion
+    maxGeneraciones = 10  # Numero de generaciones
     k = 3  # Tamaño torneo selector de padres
     cProb = 0.7  # Probabilidad de cruce 0.7
     mProb = 0.3  # Probabilidad de mutacion 0.3
@@ -187,12 +208,12 @@ def main():
     ##Creamos n soluciones aleatorias que sean válidas
     # Cada elemento de poblacion son individuos (combinaciones de soluciones, donde fitness es el profit de la mochila)
     poblacion = []
-    sbest = [0,0,0,0,0]
+
     for i in range(nSoluciones):
         objetos = list(range(l))
         solucion = []
         peso = 0
-        while peso < pesoMax:
+        while peso < pesoMax and objetos:
             objeto = objetos[random.randint(0, len(objetos) - 1)]
             peso += pesos[objeto]
             if peso <= pesoMax:
@@ -204,10 +225,17 @@ def main():
             s.append(0)
         for i in solucion:
             s[i] = 1
-        if evaluarSolucion( s, precios, pesos, pesoMax) > evaluarSolucion(sbest, precios, pesos, pesoMax):
-            sbest=s
+
         poblacion.append([s, evaluarSolucion(s, precios, pesos, pesoMax)])  # Agrego la poblacion y como de buena es
 
+    # Vamos a comprobar la mejor solución de la población inicial
+
+    sbest = poblacion[0]
+    for individuo in poblacion:
+        if evaluarSolucion(individuo[0], precios, pesos, pesoMax) > evaluarSolucion(sbest[0], precios, pesos, pesoMax):
+            sbest = individuo
+
+    # Eje x
     it = 1
 
     print(f"Población inicial: {poblacion}")
@@ -223,12 +251,15 @@ def main():
         for solucion in nSoluciones:
             # Genero nuevas posibles poblaciones para intentar mejorar
             poblacion.append([solucion[0], evaluarSolucion(solucion[0], precios, pesos, pesoMax)])
-            if evaluarSolucion(solucion[0], precios, pesos, pesoMax) > evaluarSolucion(sbest, precios, pesos, pesoMax):
-                sbest = solucion[0]
+            if evaluarSolucion(solucion[0], precios, pesos, pesoMax) > evaluarSolucion(sbest[0], precios, pesos,
+                                                                                       pesoMax):
+
+                sbest = [solucion[0], evaluarSolucion(solucion[0], precios, pesos, pesoMax)]
+
         it += 1
 
         print(f"Población generada mediante selección generacional en la iteración {it}: {poblacion}")
-    print(f"Mejor solucion encontrada mediante elitismo: {sbest}, con una puntuacion de: {evaluarSolucion(sbest, precios, pesos, pesoMax)}")
+    print(f"Mejor solucion encontrada mediante elitismo: {sbest[0]}, con una puntuacion de: {sbest[1]}")
 
 if __name__ == "__main__":
     main()
