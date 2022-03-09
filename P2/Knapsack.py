@@ -120,7 +120,7 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
             for i in range(n_progenitores):
                 progenitores.append(seleccionar_individuo(poblacion, k))
 
-            tajo = random.randint(0, len(progenitores[0][0]) - 1)
+            tajo = random.randint(1, len(progenitores[0][0]) - 2)
 
             posible_cruce = []
 
@@ -162,6 +162,21 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
                 for i in range(len(progenitores)):
                     poblacion_nueva.append(progenitores[i])
 
+            # Puede darse una probabilidad de que los nuevos individuos muten
+            # Mutar padres con probabilidad mProb
+            if random.uniform(0, 1) <= mProb:
+
+                # Va a mutar un bit de los dos padres
+                for individuo in poblacion_nueva:
+                    # Los progenitores se modifican por referencia de la lista de poblacion
+
+                    # Seleccionamos el bit que vamos a modificar del progenitor i-esimo
+                    bit_mutable = random.randint(0, len(individuo[0]) - 1)
+
+                    # Complemetamos el bit previo que tenia el progenitor i-esimo
+                    individuo[0][bit_mutable] = int(not individuo[0][bit_mutable])
+
+            """
             # Mutar padres con probabilidad mProb
             if random.uniform(0, 1) <= mProb:
 
@@ -174,6 +189,7 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
 
                     # Complemetamos el bit previo que tenia el progenitor i-esimo
                     progenitores[i][0][bit_mutable] = int(not progenitores[i][0][bit_mutable])
+            """
 
     # Cruzar padres con probabilidad cProb
     # if random.randint(1,100) <= cProb:
@@ -230,11 +246,19 @@ def main():
 
     # Vamos a comprobar la mejor solución de la población inicial
 
+    media = 0
+    aux = 0
     sbest = poblacion[0]
     for individuo in poblacion:
+        media = media + individuo[1]
+        aux = aux + 1
         if evaluarSolucion(individuo[0], precios, pesos, pesoMax) > evaluarSolucion(sbest[0], precios, pesos, pesoMax):
             sbest = individuo
 
+    media = media / aux
+
+    fichero = open("medias.txt", "w")
+    fichero.write(f"{media}\n")
     # Eje x
     it = 1
 
@@ -248,6 +272,8 @@ def main():
 
         # POBLACION ESTA VACIO, VUELVO A CREARLO DE NUEVO
         poblacion = []
+        media = 0
+        aux = 0
         for solucion in nSoluciones:
             # Genero nuevas posibles poblaciones para intentar mejorar
             poblacion.append([solucion[0], evaluarSolucion(solucion[0], precios, pesos, pesoMax)])
@@ -255,7 +281,8 @@ def main():
                                                                                        pesoMax):
 
                 sbest = [solucion[0], evaluarSolucion(solucion[0], precios, pesos, pesoMax)]
-
+            media = media + individuo[1]
+            aux = aux + 1
         it += 1
 
         print(f"Población generada mediante selección generacional en la iteración {it}: {poblacion}")
