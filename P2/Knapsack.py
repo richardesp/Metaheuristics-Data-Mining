@@ -232,7 +232,7 @@ def main():
     pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
     nSoluciones = 12  # Tamaño de la poblacion
-    maxGeneraciones = 100  # Numero de generaciones
+    maxGeneraciones = 1000  # Numero de generaciones
     k = 3  # Tamaño torneo selector de padres
     cProb = 0.7  # Probabilidad de cruce 0.7
     mProb = 0.3  # Probabilidad de mutacion 0.3
