@@ -202,10 +202,10 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
 
 def main():
 
-    PRIMER_PROBLEMA = True
+    PRIMER_PROBLEMA = False
     SEGUNDO_PROBLEMA = False
     TERCER_PROBLEMA = False
-    CUARTO_PROBLEMA = False
+    CUARTO_PROBLEMA = True
 
     if PRIMER_PROBLEMA:
         # Solución óptima -> 637 (5 objetos)
@@ -287,17 +287,17 @@ def main():
 
     media = media / count
 
-    fichero_medias = open(f"valores_fitness_medias_poblacionales_por_iteracion_con_{nSoluciones}_individuos_con_{pesos.__len__()}_objetos.txt", "w")
-    fichero_mejores = open(f"valores_fitness_mejor_individuo_por_iteracion_con_{nSoluciones}_individuos_con_{pesos.__len__()}_objetos.txt", "w")
+    fichero_medias = open(f"valores_fitness_medias_poblacionales_por_iteracion_con_{nSoluciones}_individuos_con_{pesos.__len__()}_objetos.csv", "w")
+    fichero_mejores = open(f"valores_fitness_mejor_individuo_por_iteracion_con_{nSoluciones}_individuos_con_{pesos.__len__()}_objetos.csv", "w")
 
     # Eje x
     it = 1
 
-    fichero_medias.write(f"Iteraciones (eje x) Media de la población i-ésima (Eje y)\n")
-    fichero_mejores .write(f"Iteraciones (eje x) Mejor individuo hasta el momento (Eje y)\n")
+    fichero_medias.write(f"Iteraciones (eje x),Media de la población i-ésima (Eje y)\n")
+    fichero_mejores .write(f"Iteraciones (eje x),Mejor individuo hasta el momento (Eje y)\n")
 
-    fichero_medias.write(f"{it}\t\t\t\t\t{media}\n")
-    fichero_mejores.write(f"{it}\t\t\t\t\t{sbest[1]}\n")
+    fichero_medias.write(f"{it},{media}\n")
+    fichero_mejores.write(f"{it},{sbest[1]}\n")
 
     print(f"Población inicial: {poblacion}")
     while it < maxGeneraciones:
@@ -327,8 +327,8 @@ def main():
         media = media / count
         it += 1
 
-        fichero_medias.write(f"{it}\t\t\t\t\t{media}\n")
-        fichero_mejores.write(f"{it}\t\t\t\t\t{sbest[1]}\n")
+        fichero_medias.write(f"{it},{media}\n")
+        fichero_mejores.write(f"{it},{sbest[1]}\n")
 
         print(f"Población generada mediante selección generacional en la iteración {it}: {poblacion}")
     print(f"Mejor solucion encontrada mediante elitismo: {sbest[0]}, con una puntuacion de: {sbest[1]}")
