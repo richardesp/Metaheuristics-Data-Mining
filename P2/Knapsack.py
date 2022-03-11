@@ -202,37 +202,41 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
 
 def main():
 
-    """ PRIMER PROBLEMA PLANTEADO
-    # Solución óptima -> 637 (5 objetos)
-    pesos = [34, 45, 14, 76, 32]
-    precios = [340, 210, 87, 533, 112]
-    pesoMax = 100  # Peso máximo que se puede poner en la mochila
-    """
+    PRIMER_PROBLEMA = True
+    SEGUNDO_PROBLEMA = False
+    TERCER_PROBLEMA = False
+    CUARTO_PROBLEMA = False
 
-    """ SEGUNDO PROBLEMA PLANTEADO    
-    # Solución óptima -> 2126 (10 objetos)
-    pesos = [20, 12, 67, 34, 12, 34, 22, 34, 23, 12]
-    precios = [340, 510, 671, 123, 54, 312, 421, 424, 341, 431]
-    pesoMax = 100  # Peso máximo que se puede poner en la mochila
-    """
+    if PRIMER_PROBLEMA:
+        # Solución óptima -> 637 (5 objetos)
+        pesos = [34, 45, 14, 76, 32]
+        precios = [340, 210, 87, 533, 112]
+        pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
-    """ TERCER PROBLEMA PLANTEADO
-    # Solución óptima -> 2426 (20 objetos)
-    pesos = [34, 23, 54, 34, 23, 76, 21, 43, 12, 43, 67, 54, 12, 42, 32, 12, 67, 22, 45, 34]
-    precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321]
-    pesoMax = 100  # Peso máximo que se puede poner en la mochila
-    """
 
-    # Solución óptima -> 5620 (50 objetos)
-    pesos = [32, 23, 12, 56, 67, 45, 12, 8, 35, 23, 12, 54, 31, 12, 23, 34, 11, 32, 5, 12, 42, 23, 12, 54, 17, 11, 43,
-             12, 23, 32, 12, 32, 12, 32, 43, 22, 43, 21, 43, 67, 32, 12, 32, 32, 32, 12, 43, 21, 32, 12]
-    precios = [567, 453, 884, 215, 321, 321, 433, 231, 324, 432, 432, 564, 321, 565, 432, 456, 874, 674, 154, 123, 452,
-               542, 542, 321, 654, 684, 535, 832, 245, 354, 267, 652, 543, 751, 531, 542, 652, 562, 532, 786, 325, 542,
-               537, 143, 322, 536, 890, 562, 456, 343]
-    pesoMax = 100  # Peso máximo que se puede poner en la mochila
+    if SEGUNDO_PROBLEMA:
+        # Solución óptima -> 2126 (10 objetos)
+        pesos = [20, 12, 67, 34, 12, 34, 22, 34, 23, 12]
+        precios = [340, 510, 671, 123, 54, 312, 421, 424, 341, 431]
+        pesoMax = 100  # Peso máximo que se puede poner en la mochila
+
+    if TERCER_PROBLEMA:
+        # Solución óptima -> 2426 (20 objetos)
+        pesos = [34, 23, 54, 34, 23, 76, 21, 43, 12, 43, 67, 54, 12, 42, 32, 12, 67, 22, 45, 34]
+        precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321]
+        pesoMax = 100  # Peso máximo que se puede poner en la mochila
+
+    if CUARTO_PROBLEMA:
+        # Solución óptima -> 5620 (50 objetos)
+        pesos = [32, 23, 12, 56, 67, 45, 12, 8, 35, 23, 12, 54, 31, 12, 23, 34, 11, 32, 5, 12, 42, 23, 12, 54, 17, 11, 43,
+                 12, 23, 32, 12, 32, 12, 32, 43, 22, 43, 21, 43, 67, 32, 12, 32, 32, 32, 12, 43, 21, 32, 12]
+        precios = [567, 453, 884, 215, 321, 321, 433, 231, 324, 432, 432, 564, 321, 565, 432, 456, 874, 674, 154, 123, 452,
+                   542, 542, 321, 654, 684, 535, 832, 245, 354, 267, 652, 543, 751, 531, 542, 652, 562, 532, 786, 325, 542,
+                   537, 143, 322, 536, 890, 562, 456, 343]
+        pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
     nSoluciones = 12  # Tamaño de la poblacion
-    maxGeneraciones = 100  # Numero de generaciones
+    maxGeneraciones = 1000  # Numero de generaciones
     k = 3  # Tamaño torneo selector de padres
     cProb = 0.7  # Probabilidad de cruce 0.7
     mProb = 0.3  # Probabilidad de mutacion 0.3
