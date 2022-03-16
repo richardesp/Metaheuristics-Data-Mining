@@ -1,5 +1,5 @@
 import random
-from utils import seleccionar_individuo
+from utils import seleccionar_individuo, get_laplace_probability
 
 """
     Anotaciones del profesor:
@@ -162,20 +162,20 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
 
             # Puede darse una probabilidad de que los nuevos individuos muten
             if random.uniform(0, 1) <= mProb:
-
                 # Va a mutar un bit de los dos nuevos individuos insertados
                 ultimo_individuo = len(poblacion_nueva) - 1
                 penultimo_individuo = ultimo_individuo - 1
 
                 # Muta el último individuo insertado
                 bit_mutable = random.randint(0, len(poblacion_nueva[ultimo_individuo][0]) - 1)
-                poblacion_nueva[ultimo_individuo][0][bit_mutable] = random.randint(1, poblacion_nueva[ultimo_individuo][0][bit_mutable] + 1)
+                poblacion_nueva[ultimo_individuo][0][bit_mutable] = random.randint(1,
+                                                                                   poblacion_nueva[ultimo_individuo][0][
+                                                                                       bit_mutable] + 1)
 
                 # Muta el penúltimo individuo insertado
                 bit_mutable = random.randint(0, len(poblacion_nueva[penultimo_individuo][0]) - 1)
-                poblacion_nueva[penultimo_individuo][0][bit_mutable] = random.randint(1, poblacion_nueva[ultimo_individuo][0][bit_mutable] + 1)
-
-
+                poblacion_nueva[penultimo_individuo][0][bit_mutable] = random.randint(1, poblacion_nueva[
+                    penultimo_individuo][0][bit_mutable] + 1)
 
             """
             # Mutar padres con probabilidad mProb
@@ -201,18 +201,18 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
 
 
 def main():
-
-    PRIMER_PROBLEMA = True
+    PRIMER_PROBLEMA = False
     SEGUNDO_PROBLEMA = False
     TERCER_PROBLEMA = False
     CUARTO_PROBLEMA = False
+    QUINTO_PROBLEMA = False
+    SEXTO_PROBLEMA = True
 
     if PRIMER_PROBLEMA:
         # Solución óptima -> 802.8684210526317 (5 objetos)
         pesos = [34, 45, 14, 76, 32]
         precios = [340, 210, 87, 533, 112]
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
-
 
     if SEGUNDO_PROBLEMA:
         # Solución óptima -> 2180.176470588235 (10 objetos)
@@ -228,18 +228,72 @@ def main():
 
     if CUARTO_PROBLEMA:
         # Solución óptima -> 5734.0 (50 objetos)
-        pesos = [32, 23, 12, 56, 67, 45, 12, 8, 35, 23, 12, 54, 31, 12, 23, 34, 11, 32, 5, 12, 42, 23, 12, 54, 17, 11, 43,
+        pesos = [32, 23, 12, 56, 67, 45, 12, 8, 35, 23, 12, 54, 31, 12, 23, 34, 11, 32, 5, 12, 42, 23, 12, 54, 17, 11,
+                 43,
                  12, 23, 32, 12, 32, 12, 32, 43, 22, 43, 21, 43, 67, 32, 12, 32, 32, 32, 12, 43, 21, 32, 12]
-        precios = [567, 453, 884, 215, 321, 321, 433, 231, 324, 432, 432, 564, 321, 565, 432, 456, 874, 674, 154, 123, 452,
-                   542, 542, 321, 654, 684, 535, 832, 245, 354, 267, 652, 543, 751, 531, 542, 652, 562, 532, 786, 325, 542,
+        precios = [567, 453, 884, 215, 321, 321, 433, 231, 324, 432, 432, 564, 321, 565, 432, 456, 874, 674, 154, 123,
+                   452,
+                   542, 542, 321, 654, 684, 535, 832, 245, 354, 267, 652, 543, 751, 531, 542, 652, 562, 532, 786, 325,
+                   542,
                    537, 143, 322, 536, 890, 562, 456, 343]
+        pesoMax = 100  # Peso máximo que se puede poner en la mochila
+
+    if QUINTO_PROBLEMA:
+        # Solución óptima -> 5734.0 (100 objetos)
+        pesos = [32, 23, 12, 56, 67, 45, 12, 8, 35, 23, 12, 54, 31, 12, 23, 34, 11, 32, 5, 12, 42, 23, 12, 54, 17, 11,
+                 43,
+                 12, 23, 32, 12, 32, 12, 32, 43, 22, 43, 21, 43, 67, 32, 12, 32, 32, 32, 12, 43, 21, 32, 12,
+                 32, 23, 12, 56, 67, 45, 12, 8, 35, 23, 12, 54, 31, 12, 23, 34, 11, 32, 5, 12, 42, 23, 12, 54, 17, 11,
+                 43,
+                 12, 23, 32, 12, 32, 12, 32, 43, 22, 43, 21, 43, 67, 32, 12, 32, 32, 32, 12, 43, 21, 32, 12
+                 ]
+        precios = [567, 453, 884, 215, 321, 321, 433, 231, 324, 432, 432, 564, 321, 565, 432, 456, 874, 674, 154, 123,
+                   452,
+                   542, 542, 321, 654, 684, 535, 832, 245, 354, 267, 652, 543, 751, 531, 542, 652, 562, 532, 786, 325,
+                   542,
+                   537, 143, 322, 536, 890, 562, 456, 343,
+                   567, 453, 884, 215, 321, 321, 433, 231, 324, 432, 432, 564, 321, 565, 432, 456, 874, 674, 154, 123,
+                   452,
+                   542, 542, 321, 654, 684, 535, 832, 245, 354, 267, 652, 543, 751, 531, 542, 652, 562, 532, 786, 325,
+                   542,
+                   537, 143, 322, 536, 890, 562, 456, 343
+                   ]
+        pesoMax = 100  # Peso máximo que se puede poner en la mochila
+
+    if SEXTO_PROBLEMA:
+        # Solución óptima -> 5734.0 (1000 objetos)
+        pesos_iniciales = [32, 23, 12, 56, 67, 45, 12, 8, 35, 23, 12, 54, 31, 12, 23, 34, 11, 32, 5, 12, 42, 23, 12, 54,
+                           17, 11, 43,
+                           12, 23, 32, 12, 32, 12, 32, 43, 22, 43, 21, 43, 67, 32, 12, 32, 32, 32, 12, 43, 21, 32, 12,
+                           32, 23, 12, 56, 67, 45, 12, 8, 35, 23, 12, 54, 31, 12, 23, 34, 11, 32, 5, 12, 42, 23, 12, 54,
+                           17, 11,
+                           43,
+                           12, 23, 32, 12, 32, 12, 32, 43, 22, 43, 21, 43, 67, 32, 12, 32, 32, 32, 12, 43, 21, 32, 12
+                           ]
+        precios_iniciales = [567, 453, 884, 215, 321, 321, 433, 231, 324, 432, 432, 564, 321, 565, 432, 456, 874, 674,
+                             154, 123, 452,
+                             542, 542, 321, 654, 684, 535, 832, 245, 354, 267, 652, 543, 751, 531, 542, 652, 562, 532,
+                             786, 325, 542,
+                             537, 143, 322, 536, 890, 562, 456, 343,
+                             567, 453, 884, 215, 321, 321, 433, 231, 324, 432, 432, 564, 321, 565, 432, 456, 874, 674,
+                             154, 123,
+                             452,
+                             542, 542, 321, 654, 684, 535, 832, 245, 354, 267, 652, 543, 751, 531, 542, 652, 562, 532,
+                             786, 325,
+                             542,
+                             537, 143, 322, 536, 890, 562, 456, 343
+                             ]
+
+        pesos = pesos_iniciales + pesos_iniciales + pesos_iniciales + pesos_iniciales + pesos_iniciales + pesos_iniciales + pesos_iniciales + pesos_iniciales + pesos_iniciales + pesos_iniciales
+        precios = precios_iniciales + precios_iniciales + precios_iniciales + precios_iniciales + precios_iniciales + precios_iniciales + precios_iniciales + precios_iniciales + precios_iniciales + precios_iniciales
+
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
     nSoluciones = 100  # Tamaño de la poblacion
     maxGeneraciones = 1000  # Numero de generaciones
     k = 3  # Tamaño torneo selector de padres
     cProb = 0.7  # Probabilidad de cruce 0.7
-    mProb = 0  # Probabilidad de mutacion 0.3
+    mProb = 0.3  # Probabilidad de mutacion 0.3
 
     """
     Debemos ver trucos para saber como seleccionar el nSoluciones, dado el problema. 
@@ -263,14 +317,14 @@ def main():
         peso = 0
         while peso < pesoMax and objetos:
             objeto = objetos[random.randint(0, len(objetos) - 1)]
-            #n_objetos_a_cojer = random.randint(min_objetos_a_cojer, max_objetos_a_cojer)
+            # n_objetos_a_cojer = random.randint(min_objetos_a_cojer, max_objetos_a_cojer)
             peso += pesos[objeto]
 
             if peso <= pesoMax:
                 solucion.append(objeto)
 
                 # No elimino el objeto puesto que puedo volver a cogerlo
-                #.remove(objeto)
+                # .remove(objeto)
 
         s = []
         for i in range(l):
@@ -291,23 +345,30 @@ def main():
         media = media + individuo[1]
         count = count + 1
         if individuo[1] > sbest[1]:
-            sbest = individuo
+            sbest = individuo.copy()
 
     media = media / count
 
-    fichero_medias = open(f"valores_fitness_medias_poblacionales_por_iteracion_con_{nSoluciones}_individuos_con_{pesos.__len__()}_objetos.csv", "w")
-    fichero_mejores = open(f"valores_fitness_mejor_individuo_por_iteracion_con_{nSoluciones}_individuos_con_{pesos.__len__()}_objetos.csv", "w")
+    fichero_medias = open(
+        f"experimentos/valores_fitness_medias_poblacionales_por_iteracion_con_{nSoluciones}_individuos_con_{pesos.__len__()}_objetos.csv",
+        "w")
+    fichero_mejores = open(
+        f"experimentos/valores_fitness_mejor_individuo_por_iteracion_con_{nSoluciones}_individuos_con_{pesos.__len__()}_objetos.csv",
+        "w")
 
     # Eje x
     it = 1
 
     fichero_medias.write(f"Iteraciones (eje x),Media de la población i-ésima (Eje y)\n")
-    fichero_mejores .write(f"Iteraciones (eje x),Mejor individuo hasta el momento (Eje y)\n")
+    fichero_mejores.write(f"Iteraciones (eje x),Mejor individuo hasta el momento (Eje y)\n")
 
     fichero_medias.write(f"{it},{media}\n")
     fichero_mejores.write(f"{it},{sbest[1]}\n")
 
     print(f"Población inicial: {poblacion}")
+
+    array_frecuencies = []  # Lista para almacenar los mejores de cada población
+
     while it < maxGeneraciones:
         # Cuidado! si el número de individuos de la primera población es reducido y ejecuto muchas iteraciones las
         # nuevas generaciones, la probabilidad mprob puede provocar una población vacía (preguntar al profesor si lo
@@ -329,6 +390,10 @@ def main():
         for individuo in poblacion:
             media = media + individuo[1]
             count = count + 1
+
+            # Almaceno los profits que tienen cada uno de los invididuos
+            array_frecuencies.append(individuo[1])
+
             if individuo[1] > sbest[1]:
                 sbest = individuo
 
@@ -342,6 +407,9 @@ def main():
     print(f"Mejor solucion encontrada mediante elitismo: {sbest[0]}, con una puntuacion de: {sbest[1]}")
     fichero_medias.close()
     fichero_mejores.close()
+
+    fichero_probabilidad = open("experimentos/probabilidad.txt", "w")
+    fichero_probabilidad.write(f"{pesos.__len__()},{get_laplace_probability(array_frecuencies, sbest[1])}")
 
 
 if __name__ == "__main__":

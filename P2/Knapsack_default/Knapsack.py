@@ -287,8 +287,8 @@ def main():
 
     media = media / count
 
-    fichero_medias = open(f"valores_fitness_medias_poblacionales_por_iteracion_con_{nSoluciones}_individuos_con_{pesos.__len__()}_objetos.csv", "w")
-    fichero_mejores = open(f"valores_fitness_mejor_individuo_por_iteracion_con_{nSoluciones}_individuos_con_{pesos.__len__()}_objetos.csv", "w")
+    fichero_medias = open(f"experimentos/valores_fitness_medias_poblacionales_por_iteracion_con_{nSoluciones}_individuos_con_{pesos.__len__()}_objetos.csv", "w")
+    fichero_mejores = open(f"experimentos/valores_fitness_mejor_individuo_por_iteracion_con_{nSoluciones}_individuos_con_{pesos.__len__()}_objetos.csv", "w")
 
     # Eje x
     it = 1
