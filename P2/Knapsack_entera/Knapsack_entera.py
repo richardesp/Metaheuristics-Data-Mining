@@ -209,25 +209,25 @@ def main():
     SEXTO_PROBLEMA = True
 
     if PRIMER_PROBLEMA:
-        # Solución óptima -> 802.8684210526317 (5 objetos)
+        # Solución óptima -> 854 (5 objetos)
         pesos = [34, 45, 14, 76, 32]
         precios = [340, 210, 87, 533, 112]
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
     if SEGUNDO_PROBLEMA:
-        # Solución óptima -> 2180.176470588235 (10 objetos)
+        # Solución óptima -> 2180. (10 objetos)
         pesos = [20, 12, 67, 34, 12, 34, 22, 34, 23, 12]
         precios = [340, 510, 671, 123, 54, 312, 421, 424, 341, 431]
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
     if TERCER_PROBLEMA:
-        # Solución óptima -> 2575.294117647059 (20 objetos)
+        # Solución óptima -> 2910 (20 objetos)
         pesos = [34, 23, 54, 34, 23, 76, 21, 43, 12, 43, 67, 54, 12, 42, 32, 12, 67, 22, 45, 34]
         precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321]
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
     if CUARTO_PROBLEMA:
-        # Solución óptima -> 5734.0 (50 objetos)
+        # Solución óptima -> 5734 (50 objetos)
         pesos = [32, 23, 12, 56, 67, 45, 12, 8, 35, 23, 12, 54, 31, 12, 23, 34, 11, 32, 5, 12, 42, 23, 12, 54, 17, 11,
                  43,
                  12, 23, 32, 12, 32, 12, 32, 43, 22, 43, 21, 43, 67, 32, 12, 32, 32, 32, 12, 43, 21, 32, 12]
@@ -239,7 +239,7 @@ def main():
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
     if QUINTO_PROBLEMA:
-        # Solución óptima -> 5734.0 (100 objetos)
+        # Solución óptima -> 5734 (100 objetos)
         pesos = [32, 23, 12, 56, 67, 45, 12, 8, 35, 23, 12, 54, 31, 12, 23, 34, 11, 32, 5, 12, 42, 23, 12, 54, 17, 11,
                  43,
                  12, 23, 32, 12, 32, 12, 32, 43, 22, 43, 21, 43, 67, 32, 12, 32, 32, 32, 12, 43, 21, 32, 12,
@@ -261,7 +261,7 @@ def main():
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
     if SEXTO_PROBLEMA:
-        # Solución óptima -> 5734.0 (1000 objetos)
+        # Solución óptima -> 7134 (1000 objetos)
         pesos_iniciales = [32, 23, 12, 56, 67, 45, 12, 8, 35, 23, 12, 54, 31, 12, 23, 34, 11, 32, 5, 12, 42, 23, 12, 54,
                            17, 11, 43,
                            12, 23, 32, 12, 32, 12, 32, 43, 22, 43, 21, 43, 67, 32, 12, 32, 32, 32, 12, 43, 21, 32, 12,
@@ -289,9 +289,9 @@ def main():
 
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
-    nSoluciones = 100  # Tamaño de la poblacion
+    nSoluciones = 100 # Tamaño de la poblacion
     maxGeneraciones = 1000  # Numero de generaciones
-    k = 3  # Tamaño torneo selector de padres
+    k = 5 # Tamaño torneo selector de padres
     cProb = 0.7  # Probabilidad de cruce 0.7
     mProb = 0.3  # Probabilidad de mutacion 0.3
 
@@ -409,7 +409,7 @@ def main():
     fichero_mejores.close()
 
     fichero_probabilidad = open("experimentos/probabilidad.txt", "w")
-    fichero_probabilidad.write(f"{pesos.__len__()},{get_laplace_probability(array_frecuencies, sbest[1])}")
+    fichero_probabilidad.write(f"{k},{get_laplace_probability(array_frecuencies, sbest[1])}")
 
 
 if __name__ == "__main__":
