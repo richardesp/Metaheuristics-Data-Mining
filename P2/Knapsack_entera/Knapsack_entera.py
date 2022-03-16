@@ -169,11 +169,11 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
 
                 # Muta el último individuo insertado
                 bit_mutable = random.randint(0, len(poblacion_nueva[ultimo_individuo][0]) - 1)
-                poblacion_nueva[ultimo_individuo][0][bit_mutable] = int(not poblacion_nueva[ultimo_individuo][0][bit_mutable])
+                poblacion_nueva[ultimo_individuo][0][bit_mutable] = random.randint(1, poblacion_nueva[ultimo_individuo][0][bit_mutable] + 1)
 
                 # Muta el penúltimo individuo insertado
                 bit_mutable = random.randint(0, len(poblacion_nueva[penultimo_individuo][0]) - 1)
-                poblacion_nueva[penultimo_individuo][0][bit_mutable] = int(not poblacion_nueva[penultimo_individuo][0][bit_mutable])
+                poblacion_nueva[penultimo_individuo][0][bit_mutable] = random.randint(1, poblacion_nueva[ultimo_individuo][0][bit_mutable] + 1)
 
 
 
@@ -202,32 +202,32 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
 
 def main():
 
-    PRIMER_PROBLEMA = False
+    PRIMER_PROBLEMA = True
     SEGUNDO_PROBLEMA = False
     TERCER_PROBLEMA = False
-    CUARTO_PROBLEMA = True
+    CUARTO_PROBLEMA = False
 
     if PRIMER_PROBLEMA:
-        # Solución óptima -> 637 (5 objetos)
+        # Solución óptima -> 802.8684210526317 (5 objetos)
         pesos = [34, 45, 14, 76, 32]
         precios = [340, 210, 87, 533, 112]
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
 
     if SEGUNDO_PROBLEMA:
-        # Solución óptima -> 2126 (10 objetos)
+        # Solución óptima -> 2180.176470588235 (10 objetos)
         pesos = [20, 12, 67, 34, 12, 34, 22, 34, 23, 12]
         precios = [340, 510, 671, 123, 54, 312, 421, 424, 341, 431]
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
     if TERCER_PROBLEMA:
-        # Solución óptima -> 2426 (20 objetos)
+        # Solución óptima -> 2575.294117647059 (20 objetos)
         pesos = [34, 23, 54, 34, 23, 76, 21, 43, 12, 43, 67, 54, 12, 42, 32, 12, 67, 22, 45, 34]
         precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321]
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
     if CUARTO_PROBLEMA:
-        # Solución óptima -> 5620 (50 objetos)
+        # Solución óptima -> 5734.0 (50 objetos)
         pesos = [32, 23, 12, 56, 67, 45, 12, 8, 35, 23, 12, 54, 31, 12, 23, 34, 11, 32, 5, 12, 42, 23, 12, 54, 17, 11, 43,
                  12, 23, 32, 12, 32, 12, 32, 43, 22, 43, 21, 43, 67, 32, 12, 32, 32, 32, 12, 43, 21, 32, 12]
         precios = [567, 453, 884, 215, 321, 321, 433, 231, 324, 432, 432, 564, 321, 565, 432, 456, 874, 674, 154, 123, 452,
@@ -235,11 +235,11 @@ def main():
                    537, 143, 322, 536, 890, 562, 456, 343]
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
-    nSoluciones = 12  # Tamaño de la poblacion
+    nSoluciones = 100  # Tamaño de la poblacion
     maxGeneraciones = 1000  # Numero de generaciones
     k = 3  # Tamaño torneo selector de padres
     cProb = 0.7  # Probabilidad de cruce 0.7
-    mProb = 0.3  # Probabilidad de mutacion 0.3
+    mProb = 0  # Probabilidad de mutacion 0.3
 
     """
     Debemos ver trucos para saber como seleccionar el nSoluciones, dado el problema. 
@@ -248,6 +248,9 @@ def main():
 
 
     """
+
+    min_objetos_a_cojer = 1
+    max_objetos_a_cojer = 3
 
     l = len(pesos)
     ##Creamos n soluciones aleatorias que sean válidas
@@ -260,16 +263,21 @@ def main():
         peso = 0
         while peso < pesoMax and objetos:
             objeto = objetos[random.randint(0, len(objetos) - 1)]
+            #n_objetos_a_cojer = random.randint(min_objetos_a_cojer, max_objetos_a_cojer)
             peso += pesos[objeto]
+
             if peso <= pesoMax:
                 solucion.append(objeto)
-                objetos.remove(objeto)
+
+                # No elimino el objeto puesto que puedo volver a cogerlo
+                #.remove(objeto)
 
         s = []
         for i in range(l):
             s.append(0)
-        for i in solucion:
-            s[i] = 1
+
+        for item in solucion:
+            s[item] = s[item] + 1
 
         poblacion.append([s, evaluarSolucion(s, precios, pesos, pesoMax)])  # Agrego la poblacion y como de buena es
 
