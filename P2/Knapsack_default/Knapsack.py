@@ -1,5 +1,5 @@
 import random
-from utils import seleccionar_individuo
+from utils import seleccionar_individuo, get_laplace_probability
 
 """
     Anotaciones del profesor:
@@ -201,45 +201,111 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
 
 
 def main():
-
     PRIMER_PROBLEMA = False
     SEGUNDO_PROBLEMA = False
     TERCER_PROBLEMA = False
-    CUARTO_PROBLEMA = True
+    CUARTO_PROBLEMA = False
+    QUINTO_PROBLEMA = False
+    SEXTO_PROBLEMA = False
+    SEPTIMO_PROBLEMA = False
+    OCTAVO_PROBLEMA = False
+    NOVENO_PROBLEMA = False
+    DECIMO_PROBLEMA = False
+    UNDECIMO_PROBLEMA = True
 
     if PRIMER_PROBLEMA:
-        # Solución óptima -> 637 (5 objetos)
+        # (5 objetos)
         pesos = [34, 45, 14, 76, 32]
         precios = [340, 210, 87, 533, 112]
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
-
     if SEGUNDO_PROBLEMA:
-        # Solución óptima -> 2126 (10 objetos)
+        # (10 objetos)
         pesos = [20, 12, 67, 34, 12, 34, 22, 34, 23, 12]
         precios = [340, 510, 671, 123, 54, 312, 421, 424, 341, 431]
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
     if TERCER_PROBLEMA:
-        # Solución óptima -> 2426 (20 objetos)
-        pesos = [34, 23, 54, 34, 23, 76, 21, 43, 12, 43, 67, 54, 12, 42, 32, 12, 67, 22, 45, 34]
-        precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321]
+        # (15 objetos)
+        pesos = [20, 12, 67, 34, 12, 34, 22, 34, 23, 12, 45, 12, 54, 12, 43]
+        precios = [340, 510, 671, 123, 54, 312, 421, 424, 341, 431, 251, 231, 85, 32, 32]
         pesoMax = 100  # Peso máximo que se puede poner en la mochila
 
     if CUARTO_PROBLEMA:
-        # Solución óptima -> 5620 (50 objetos)
-        pesos = [32, 23, 12, 56, 67, 45, 12, 8, 35, 23, 12, 54, 31, 12, 23, 34, 11, 32, 5, 12, 42, 23, 12, 54, 17, 11, 43,
-                 12, 23, 32, 12, 32, 12, 32, 43, 22, 43, 21, 43, 67, 32, 12, 32, 32, 32, 12, 43, 21, 32, 12]
-        precios = [567, 453, 884, 215, 321, 321, 433, 231, 324, 432, 432, 564, 321, 565, 432, 456, 874, 674, 154, 123, 452,
-                   542, 542, 321, 654, 684, 535, 832, 245, 354, 267, 652, 543, 751, 531, 542, 652, 562, 532, 786, 325, 542,
-                   537, 143, 322, 536, 890, 562, 456, 343]
-        pesoMax = 100  # Peso máximo que se puede poner en la mochila
+        # (20 objetos)
+        pesos = [34, 23, 54, 34, 23, 76, 21, 43, 12, 43, 67, 54, 12, 42, 32, 12, 67, 22, 45, 34]
+        precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321]
+        pesoMax = 100
+
+    if QUINTO_PROBLEMA:
+        # (25 objetos)
+        pesos = [34, 23, 54, 34, 23, 76, 21, 43, 12, 43, 67, 54, 12, 42, 32, 12, 67, 22, 45, 34, 67, 45, 32, 54, 21]
+        precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321,
+                   674, 543, 123, 95, 24]
+        pesoMax = 100
+
+    if SEXTO_PROBLEMA:
+        # (30 objetos)
+        pesos = [34, 23, 54, 34, 23, 76, 21, 43, 12, 43, 67, 54, 12, 42, 32, 12, 67, 22, 45, 34, 62, 43, 12, 43, 54, 78,
+                 43, 54, 32, 54]
+        precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321,
+                   251, 324, 321, 324, 123, 674, 342, 435, 212, 322]
+        pesoMax = 100
+
+    if SEPTIMO_PROBLEMA:
+        # (35 objetos)
+        pesos = [34, 23, 54, 34, 23, 76, 21, 43, 12, 43, 67, 54, 12, 42, 32, 12, 67, 22, 45, 34, 62, 43, 12, 43, 54, 78,
+                 43, 54, 32, 54, 45, 32, 54, 54, 23]
+        precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321,
+                   251, 324, 321, 324, 123, 674, 342, 435, 212, 322, 546, 431, 432, 435, 212]
+        pesoMax = 100
+
+    if OCTAVO_PROBLEMA:
+        # (40 objetos)
+        pesos = [34, 23, 54, 34, 23, 76, 21, 43, 12, 43, 67, 54, 12, 42, 32, 12, 67, 22, 45, 34, 62, 43, 12, 43, 54, 78,
+                 67, 45, 89, 43, 67, 43, 54, 12, 43, 67, 23, 45, 87, 89]
+        precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321,
+                   251, 324, 321, 324, 123, 672, 521, 98, 43, 432, 63, 675, 324, 435, 467, 123, 321, 234, 340, 321]
+        pesoMax = 100
+
+    if NOVENO_PROBLEMA:
+        # (45 objetos)
+        pesos = [34, 23, 54, 34, 23, 76, 21, 43, 12, 43, 67, 54, 12, 42, 32, 12, 67, 22, 45, 34, 62, 43, 12, 43, 54, 78,
+                 67, 45, 89, 43, 67, 43, 54, 12, 43, 67, 23, 45, 87, 89, 67, 78, 12, 32, 34]
+        precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321,
+                   251, 324, 321, 324, 123, 672, 521, 98, 43, 432, 63, 675, 324, 435, 467, 123, 321, 234, 340, 234, 324,
+                   212, 434, 345, 453]
+        pesoMax = 100
+
+    if DECIMO_PROBLEMA:
+        # (50 objetos)
+        pesos = [34, 23, 54, 34, 23, 76, 21, 43, 12, 43, 67, 54, 12, 42, 32, 12, 67, 22, 45, 34, 62, 43, 12, 43, 54, 78,
+                 67, 45, 89, 43, 67, 43, 54, 12, 43, 67, 23, 45, 87, 89, 67, 78, 12, 32, 34, 34, 34, 32, 12, 43]
+        precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321,
+                   251, 324, 321, 324, 123, 672, 521, 98, 43, 432, 63, 675, 324, 435, 467, 123, 321, 234, 340, 234, 324,
+                   212, 434, 345, 453, 435, 212, 324, 323, 123]
+        pesoMax = 100
+
+    if UNDECIMO_PROBLEMA:
+        # (100 objetos)
+        pesos = [34, 23, 54, 34, 23, 76, 21, 43, 12, 43, 67, 54, 12, 42, 32, 12, 67, 22, 45, 34, 62, 43, 12, 43, 54, 78,
+                 67, 45, 89, 43, 67, 43, 54, 12, 43, 67, 23, 45, 87, 89, 67, 78, 12, 32, 34, 34, 34, 32, 12, 43]
+        precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321,
+                   251, 324, 321, 324, 123, 672, 521, 98, 43, 432, 63, 675, 324, 435, 467, 123, 321, 234, 340, 234, 324,
+                   212, 434, 345, 453, 435, 212, 324, 323, 123]
+        pesoMax = 100
+
+        pesos = pesos + pesos
+        precios = precios + precios
 
     nSoluciones = 100  # Tamaño de la poblacion
     maxGeneraciones = 1000  # Numero de generaciones
-    k = 3  # Tamaño torneo selector de padres
+    k = 5  # Tamaño torneo selector de padres
     cProb = 0.7  # Probabilidad de cruce 0.7
     mProb = 0.3  # Probabilidad de mutacion 0.3
+
+
+    array_frecuencies = []  # Lista para almacenar los mejores de cada población
 
     """
     Debemos ver trucos para saber como seleccionar el nSoluciones, dado el problema. 
@@ -321,6 +387,9 @@ def main():
         for individuo in poblacion:
             media = media + individuo[1]
             count = count + 1
+
+            array_frecuencies.append(individuo[1])
+
             if individuo[1] > sbest[1]:
                 sbest = individuo
 
@@ -335,6 +404,8 @@ def main():
     fichero_medias.close()
     fichero_mejores.close()
 
+    fichero_probabilidad = open("experimentos/probabilidad.txt", "w")
+    fichero_probabilidad.write(f"{pesos.__len__()},{get_laplace_probability(array_frecuencies, sbest[1])}")
 
 if __name__ == "__main__":
     main()
