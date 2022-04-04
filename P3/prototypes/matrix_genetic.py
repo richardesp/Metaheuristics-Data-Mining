@@ -6,6 +6,39 @@ import enum
 import string
 
 
+def random_mutation(events: list, parent: str) -> str:
+    index_to_mutate = random.randint(0, len(parent) - 1)
+    new_event = events[random.randint(0, len(events) - 1)]
+
+    # Solo estoy mutando uno de los eventos
+    replaces_count = 1
+
+    # Debemos evitar que al mutar se mantenga el mismo evento, para así generar cambio
+    while new_event == parent[index_to_mutate]:
+        new_event = random.randint(0, len(events) - 1)
+
+    new_parent = parent.replace(parent[index_to_mutate], new_event, replaces_count)
+
+    return new_parent
+
+
+def cut_1_cross(parent_1: str, parent_2: str) -> str:
+    child = ''
+    parents_length = len(parent_1)
+
+    # Tajo desde el elemento 1 hasta el n-2 (para evitar réplicas totales de un padre)
+    cut = random.randint(1, parents_length - 2)
+
+    for i in range(cut + 1):
+        child += parent_1[i]
+
+    for i in range(cut + 1, parents_length):
+        child += parent_2[i]
+
+    print(cut)
+    return child
+
+
 def create_random_pattern_hill_climbing(events: list, length: int, data: list, aux_events: list) -> str:
     pattern = ''
     count = 1
@@ -143,7 +176,7 @@ def main():
 
     pattern = create_random_pattern(events, pattern_length)
     pattern = create_random_valid_pattern(events, pattern_length, data)
-    #pattern = create_random_pattern_hill_climbing(events, pattern_length, data)
+    # pattern = create_random_pattern_hill_climbing(events, pattern_length, data)
 
     print(f"El patrón {pattern} aparece con una frecuencia de {evaluate_pattern(pattern, data)}")
 
@@ -155,7 +188,7 @@ def main():
 
     print(f"Posibles eventos {events}")
 
-    aux_events = events.copy()  # Creo una copia para iterar en el bucle
+    aux_events = events.copy()  # Creo una copia para iterar en el bucle, dado que iré borrando para evitar réplicas de individuos
 
     for _ in range(nSoluciones):
         patterns_list.append(create_random_pattern_hill_climbing(events, pattern_length, data, aux_events))
@@ -172,7 +205,7 @@ def main():
     end = time.time()
     """
 
-    #print(f"Tiempo en evaluar {nSoluciones} patrones en {nGeneraciones} generaciones: {(end - start) * 1000} ms")
+    # print(f"Tiempo en evaluar {nSoluciones} patrones en {nGeneraciones} generaciones: {(end - start) * 1000} ms")
 
     pattern = 'AFCCCEE'
     print(f"{pattern} {evaluate_pattern(pattern, data)}")
@@ -183,6 +216,9 @@ def main():
     # HAGO CRUCE CON UNA PROB DE X
     # HAGO MUT CON UNA PROB DE Y
 
+    parent = create_random_pattern(aux_events, pattern_length)
+    print(parent)
+    print(random_mutation(aux_events, parent))
 
 if __name__ == "__main__":
     main()
