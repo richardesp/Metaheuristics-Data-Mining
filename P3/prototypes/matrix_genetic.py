@@ -3,15 +3,17 @@ import re
 import time
 from functools import lru_cache
 import enum
-import numpy as np
 import string
 
 
-def create_random_pattern_hill_climbing(events: tuple, length: int, data: list) -> str:
+def create_random_pattern_hill_climbing(events: list, length: int, data: list, aux_events: list) -> str:
     pattern = ''
-    count = 0
+    count = 1
 
     event = random.choice(events)
+
+    # Voy borrando eventos para así comenzar con otros nuevos posibles
+    events.remove(event)
 
     # Agregamos el evento inicial
     pattern += event
@@ -20,13 +22,17 @@ def create_random_pattern_hill_climbing(events: tuple, length: int, data: list) 
     while count < length:
 
         best_frequency = 0.0
-        best_event = events[0]
-        for item in events:
+        best_event = ''
+        for item in aux_events:
 
             current_frequency = evaluate_pattern(pattern + item, data)
             if current_frequency > best_frequency:
                 best_frequency = current_frequency
                 best_event = item
+
+        # Si no ha encontrado nada mejor a 0.0, selecciono cualquier evento
+        if best_event == '':
+            best_event = random.choice(events)
 
         pattern += best_event
         count = count + 1
@@ -68,14 +74,14 @@ def create_random_pattern(events: tuple, length: int) -> str:
     return pattern
 
 
-def process_events(data: list) -> tuple:
+def process_events(data: list) -> list:
     events = set()
 
     for patient in data:
         for item in patient:
             events.add(item)
 
-    return tuple(events)
+    return list(tuple(events))
 
 
 def exist_pattern(pattern: str, patient: tuple) -> bool:
@@ -137,24 +143,45 @@ def main():
 
     pattern = create_random_pattern(events, pattern_length)
     pattern = create_random_valid_pattern(events, pattern_length, data)
-    pattern = create_random_pattern_hill_climbing(events, pattern_length, data)
+    #pattern = create_random_pattern_hill_climbing(events, pattern_length, data)
 
     print(f"El patrón {pattern} aparece con una frecuencia de {evaluate_pattern(pattern, data)}")
 
     patterns_list = []
-    nSoluciones = 100
-    nGeneraciones = 1000
-    start = time.time()
-    for _ in range(nSoluciones):
-        patterns_list.append(create_random_pattern_hill_climbing(events, pattern_length, data))
 
+    # No puedo poner más de 20 porque solamente tengo 20 eventos
+    nSoluciones = 20
+    nGeneraciones = 7000
+
+    print(f"Posibles eventos {events}")
+
+    aux_events = events.copy()  # Creo una copia para iterar en el bucle
+
+    for _ in range(nSoluciones):
+        patterns_list.append(create_random_pattern_hill_climbing(events, pattern_length, data, aux_events))
+
+    for pattern in patterns_list:
+        print(f"Patrón {pattern} aparece con una frecuencia de {evaluate_pattern(pattern, data)}")
+
+    """
+    start = time.time()
     for _ in range(nGeneraciones):
         for pattern in patterns_list:
             # print(f"Patrón {pattern} -> {evaluate_pattern(pattern, data)}")
             evaluate_pattern(pattern, data)
     end = time.time()
+    """
 
-    print(f"Tiempo en evaluar {nSoluciones} patrones en {nGeneraciones} generaciones: {(end - start) * 1000} ms")
+    #print(f"Tiempo en evaluar {nSoluciones} patrones en {nGeneraciones} generaciones: {(end - start) * 1000} ms")
+
+    pattern = 'AFCCCEE'
+    print(f"{pattern} {evaluate_pattern(pattern, data)}")
+
+    # SELECCIONAR POBLACIÓN INICIAL CON HILL CLIMBING
+
+    # EJECUTO N GENERACIONES
+    # HAGO CRUCE CON UNA PROB DE X
+    # HAGO MUT CON UNA PROB DE Y
 
 
 if __name__ == "__main__":
