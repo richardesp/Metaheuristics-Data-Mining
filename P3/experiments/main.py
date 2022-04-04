@@ -87,7 +87,7 @@ def calculate_prev_epochs(prev_epochs: set, next: str, list_patients: list) -> s
     return prev_set
 
 def main():
-    path = "dataset_3_10.txt"
+    path = "../datasets/dataset_3_10.txt"
     list_patients = []
 
     with open(path, "r") as file:

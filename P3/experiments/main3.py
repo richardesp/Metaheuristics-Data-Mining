@@ -4,37 +4,24 @@ import time
 from functools import lru_cache
 import enum
 import numpy as np
+import string
+
 
 @lru_cache(maxsize=65536)
-def exist_pattern_cached(pattern: str, patient: tuple) -> bool:
-    index_pattern = len(pattern) - 1  # Vamos recorriendo de delante hacia atrás
+def get_event_from_patient(patient: list, index_patient: int) -> str:
+    return patient[index_patient]
 
-    for index_patient in range(len(patient) - 1, -1, -1):
-        if patient[index_patient] == pattern[index_pattern]:
-            index_pattern = index_pattern - 1
-
-        # Habremos acabo de recorrer el patrón
-        if index_pattern < 0:
-            break
-
-    return index_pattern == -1
-
-@lru_cache(maxsize=65536)
-def evaluate_pattern_cached(pattern: str, data: tuple) -> float:
-    frequency = 0
-
-    # Realizamos un recorrido inverso para ver si el patrón ha aparecido previamente
-    for patient in data:
-        if exist_pattern_cached(pattern, patient):
-            frequency += 1
-
-    return float(frequency / data.__len__())
 
 def exist_pattern(pattern: str, patient: tuple) -> bool:
     index_pattern = len(pattern) - 1  # Vamos recorriendo de delante hacia atrás
 
     for index_patient in range(len(patient) - 1, -1, -1):
-        if patient[index_patient] == pattern[index_pattern]:
+
+        # En el momento que encuentre la letra del patrón este ya existirá, por tanto seguimos viendo
+        # si hay coincidencia en el paciente i-ésimo
+        # Esto se debe a que no deben ir seguidos, sino que los eventos existan en cualquier momento del patrón
+        # aunque AB, y A aparezca en la época 1 y B en la época 767 (por eso es un problema tan complejo)
+        if get_event_from_patient(patient, index_patient) == pattern[index_pattern]:
             index_pattern = index_pattern - 1
 
         # Habremos acabo de recorrer el patrón
@@ -55,21 +42,6 @@ def evaluate_pattern(pattern: str, data: tuple) -> float:
     return float(frequency / data.__len__())
 
 
-@lru_cache(maxsize=65536)
-def process_data(data: tuple) -> None:
-    """
-    Esta función nos permite almacenar en caché la matriz lo cual lo hace muy eficiente
-
-    :param data:
-    :return:
-    """
-    count = 0
-    for patient in data:
-        for event in patient:
-            ++count
-
-
-@lru_cache(maxsize=65536)
 def read_dataset(path: str) -> tuple:
     list_patients = []
 
@@ -94,61 +66,49 @@ def read_dataset(path: str) -> tuple:
 
 
 def main():
-    data = read_dataset('dataset_100_500.txt')
+    data = read_dataset('../datasets/dataset_100_500.txt')
 
-    for index in range(len(data)):
-        print(f"Paciente {index}: {data[index]}")
-
-    start = time.time()
-    process_data(data)
-    end = time.time()
-    print(f"{(end - start) * 1000} ms")
-    default_ram = end - start
-
-    mean = 0
-
-    for _ in range(100000):
-        start = time.time()
-        process_data(data)
-        end = time.time()
-        mean += (end - start)
-
-    print(f"{(mean / 100000) * 1000} ms")
-    print(f"La mejora es de {default_ram / (mean / 100000)} veces más rápido")
-
-    print(evaluate_pattern('ABC', data))
-
-    pattern = 'C'
-    print(f"El patrón {pattern} tiene una probabilidad de aparición de {evaluate_pattern(pattern, data)}")
-
-    # COMPROBAMDO TIEMPOS DE EJECUCIÓN
     print("COMPROBAMDO TIEMPOS DE EJECUCIÓN ------->")
-    pattern = 'ABB'
 
     mean = 0
-    ejecuciones = 100
+    ejecuciones = 1000
 
-    for _ in range(ejecuciones):
+    total_start = time.time()
+    for index in range(ejecuciones):
+        letters = string.ascii_lowercase
+        pattern = ''.join(random.choice(letters) for i in range(10))
         start = time.time()
         evaluate_pattern(pattern, data)
         end = time.time()
         mean += (end - start)
+    total_end = time.time()
 
     print(f"{(mean / ejecuciones) * 1000} ms con implementación default")
+    print(f"Tiempo total en ejecutarse {ejecuciones} iteraciones: {total_end - total_start} s")
     default_ram = mean / ejecuciones
+
+    # Procesamos previamente los datos para cachearlos
+    for patient in data:
+        for index in range(len(patient)):
+            _ = get_event_from_patient(patient, index)
 
     mean = 0
 
+    total_start = time.time()
     for index in range(ejecuciones):
+        letters = string.ascii_lowercase
+        pattern = ''.join(random.choice(letters) for i in range(10))
         start = time.time()
-        evaluate_pattern_cached(pattern, data)
+        evaluate_pattern(pattern, data)
         end = time.time()
         mean += (end - start)
+    total_end = time.time()
 
     print(f"{(mean / ejecuciones) * 1000} ms con implementación cacheada")
+    print(f"Tiempo total en ejecutarse {ejecuciones} iteraciones: {total_end - total_start} s")
+    print("==================================")
     print(f"La mejora es de {default_ram / (mean / ejecuciones)} veces más rápido")
 
-    #################################
 
 if __name__ == "__main__":
     main()
