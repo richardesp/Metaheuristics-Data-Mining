@@ -211,8 +211,8 @@ def main():
     SEPTIMO_PROBLEMA = False
     OCTAVO_PROBLEMA = False
     NOVENO_PROBLEMA = False
-    DECIMO_PROBLEMA = False
-    UNDECIMO_PROBLEMA = True
+    DECIMO_PROBLEMA = True
+    UNDECIMO_PROBLEMA = False
 
     if PRIMER_PROBLEMA:
         # (5 objetos)
@@ -299,10 +299,10 @@ def main():
         pesos = pesos + pesos
         precios = precios + precios
 
-    nSoluciones = 100  # Tamaño de la poblacion
+    nSoluciones = 24  # Tamaño de la poblacion
     maxGeneraciones = 1000  # Numero de generaciones
-    k = 5  # Tamaño torneo selector de padres
-    cProb = 0.7  # Probabilidad de cruce 0.7
+    k = 3  # Tamaño torneo selector de padres
+    cProb = 0.8  # Probabilidad de cruce 0.7
     mProb = 0.3  # Probabilidad de mutacion 0.3
 
 

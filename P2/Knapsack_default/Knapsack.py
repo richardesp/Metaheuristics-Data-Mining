@@ -110,6 +110,7 @@ def aplicarOperadoresGeneticos(poblacion, k, cProb, mProb):
         # n_poblacion_nueva = random.randint(int(poblacion.__len__() / 2), poblacion.__len__()) Esto no sería correcta ya que estadísticamente convergería a 0 elementos la población
 
         n_poblacion_nueva = poblacion.__len__()
+
         poblacion_nueva = []
 
         # Esto debe ser n/2 dado que inserto de 2 en 2
@@ -210,8 +211,8 @@ def main():
     SEPTIMO_PROBLEMA = False
     OCTAVO_PROBLEMA = False
     NOVENO_PROBLEMA = False
-    DECIMO_PROBLEMA = False
-    UNDECIMO_PROBLEMA = True
+    DECIMO_PROBLEMA = True
+    UNDECIMO_PROBLEMA = False
 
     if PRIMER_PROBLEMA:
         # (5 objetos)
@@ -284,7 +285,7 @@ def main():
         precios = [564, 231, 233, 785, 123, 674, 465, 345, 421, 412, 789, 567, 324, 565, 125, 431, 897, 321, 676, 321,
                    251, 324, 321, 324, 123, 672, 521, 98, 43, 432, 63, 675, 324, 435, 467, 123, 321, 234, 340, 234, 324,
                    212, 434, 345, 453, 435, 212, 324, 323, 123]
-        pesoMax = 100
+        pesoMax = 1000
 
     if UNDECIMO_PROBLEMA:
         # (100 objetos)
@@ -300,9 +301,9 @@ def main():
 
     nSoluciones = 100  # Tamaño de la poblacion
     maxGeneraciones = 1000  # Numero de generaciones
-    k = 5  # Tamaño torneo selector de padres
+    k = 3  # Tamaño torneo selector de padres
     cProb = 0.7  # Probabilidad de cruce 0.7
-    mProb = 0.3  # Probabilidad de mutacion 0.3
+    mProb = 0.3  # Probabilidad de mutacion 0.2
 
 
     array_frecuencies = []  # Lista para almacenar los mejores de cada población
@@ -362,7 +363,7 @@ def main():
     fichero_medias.write(f"Iteraciones (eje x),Media de la población i-ésima (Eje y)\n")
     fichero_mejores .write(f"Iteraciones (eje x),Mejor individuo hasta el momento (Eje y)\n")
 
-    fichero_medias.write(f"{it},{media}\n")
+    fichero_medias.write(f"{it},{int(media)}\n")
     fichero_mejores.write(f"{it},{sbest[1]}\n")
 
     print(f"Población inicial: {poblacion}")
@@ -396,7 +397,7 @@ def main():
         media = media / count
         it += 1
 
-        fichero_medias.write(f"{it},{media}\n")
+        fichero_medias.write(f"{it},{int(media)}\n")
         fichero_mejores.write(f"{it},{sbest[1]}\n")
 
         print(f"Población generada mediante selección generacional en la iteración {it}: {poblacion}")
