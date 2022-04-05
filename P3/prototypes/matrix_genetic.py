@@ -388,6 +388,7 @@ def main():
     for x in range( len( bests_individuals ) ):
         print(f"El individuo top {x} es: {bests_individuals[x]} con una frecuencia de aparicion de: {bests_individuals_rate[x]}")
 
+
     """
     for index in range(len(data)):
         print(f"Paciente {index}: {data[index]}")
