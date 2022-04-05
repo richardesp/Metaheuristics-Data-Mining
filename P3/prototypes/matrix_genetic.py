@@ -6,6 +6,53 @@ import enum
 import string
 
 
+def apply_tournament(poblation: list, k: int) -> str:
+    candidates = []
+
+    aux_poblation = poblation.copy()
+
+    for _ in range(k):
+        pattern = random.choice(aux_poblation)
+        aux_poblation.remove(pattern)
+        candidates.append(pattern)
+
+    best_frequency = candidates[0][1]
+    best_pattern = candidates[0]
+
+    for pattern in candidates:
+        if pattern[1] > best_frequency:
+            best_frequency = pattern[1]
+            best_pattern = pattern
+
+    return best_pattern
+
+
+def apply_genetic_operator(poblation: list, k: int, c_prob: float, m_prob: float, data: list) -> list:
+    CUT_1_CROSS = True
+    new_poblation = []
+
+    if CUT_1_CROSS:
+        for _ in range(int(poblation.__len__() / 2)):
+            parent_1 = apply_tournament(poblation, k)
+
+            # Seleccionamos a otro individuo que no haya sido seleccionado previamente
+            poblation_2 = poblation.copy()
+            poblation_2.remove(parent_1)
+            parent_2 = apply_tournament(poblation_2, k)
+
+            if random.uniform(0, 1) <= c_prob:
+                new_child = cut_1_cross(parent_1[0], parent_2[0])  # Le pasamos el patrón en cuestión
+                new_poblation.append([new_child, evaluate_pattern(new_child, data)])
+                new_child = cut_1_cross(parent_2[0], parent_1[0])
+                new_poblation.append([new_child, evaluate_pattern(new_child, data)])
+
+            else:
+                new_poblation.append([parent_1[0], parent_1[1]])
+                new_poblation.append([parent_2[0], parent_1[1]])
+
+    return new_poblation
+
+
 def random_mutation(events: list, parent: str) -> str:
     index_to_mutate = random.randint(0, len(parent) - 1)
     new_event = events[random.randint(0, len(events) - 1)]
@@ -35,7 +82,6 @@ def cut_1_cross(parent_1: str, parent_2: str) -> str:
     for i in range(cut + 1, parents_length):
         child += parent_2[i]
 
-    print(cut)
     return child
 
 
@@ -167,10 +213,39 @@ def read_dataset(path: str) -> tuple:
 
 
 def main():
+    verbose = True  # Modo verbose para imprimir
+
     data = read_dataset('../datasets/dataset_100_500.txt')
     events = process_events(data)  # Conjunto de eventos posibles para así poder generar patrones aleatorios
     pattern_length = 7
+    n_solutions = 20
+    n_generations = 100
+    c_prob = .7
+    m_prob = .3
+    k = 3
+    poblation = []
 
+    old_events = events.copy()  # Copia previa de los eventos dado que se van a eliminar en hill Climbing
+
+    for _ in range(n_solutions):
+        random_pattern = create_random_pattern_hill_climbing(events, pattern_length, data, old_events)
+        poblation.append([random_pattern, evaluate_pattern(random_pattern, data)])
+
+    it = 1
+
+    if verbose:
+        print(f"Iteración {it}: {poblation}")
+
+    it += 1
+    while it <= n_generations:
+        poblation = apply_genetic_operator(poblation, k, c_prob, m_prob, data)
+
+        if verbose:
+            print(f"Iteración {it}: {poblation}")
+
+        it += 1
+
+    """
     for index in range(len(data)):
         print(f"Paciente {index}: {data[index]}")
 
@@ -197,6 +272,8 @@ def main():
         print(f"Patrón {pattern} aparece con una frecuencia de {evaluate_pattern(pattern, data)}")
 
     """
+
+    """
     start = time.time()
     for _ in range(nGeneraciones):
         for pattern in patterns_list:
@@ -207,6 +284,7 @@ def main():
 
     # print(f"Tiempo en evaluar {nSoluciones} patrones en {nGeneraciones} generaciones: {(end - start) * 1000} ms")
 
+    """
     pattern = 'AFCCCEE'
     print(f"{pattern} {evaluate_pattern(pattern, data)}")
 
@@ -219,6 +297,8 @@ def main():
     parent = create_random_pattern(aux_events, pattern_length)
     print(parent)
     print(random_mutation(aux_events, parent))
+    """
+
 
 if __name__ == "__main__":
     main()
