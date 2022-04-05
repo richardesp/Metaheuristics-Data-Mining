@@ -5,7 +5,7 @@ from functools import lru_cache
 import enum
 import string
 
-""
+
 def apply_tournament(poblation: list, k: int) -> str:
     candidates = []
 
@@ -27,7 +27,7 @@ def apply_tournament(poblation: list, k: int) -> str:
     return best_pattern
 
 
-def apply_genetic_operator(poblation: list, k: int, c_prob: float, m_prob: float, data: list) -> list:
+def apply_genetic_operator(poblation: list, k: int, c_prob: float, m_prob: float, data: list, events: list) -> list:
     CUT_1_CROSS = True
     new_poblation = []
 
@@ -47,6 +47,15 @@ def apply_genetic_operator(poblation: list, k: int, c_prob: float, m_prob: float
                 new_poblation.append([new_child, evaluate_pattern(new_child, data)])
 
             else:
+
+                # En caso de que no se hayan creado dos hijos, los dos padres pueden mutar
+                if random.uniform(0, 1) <= m_prob:
+                    parent_1[0] = random_mutation(events, parent_1[0])
+                    parent_1[1] = evaluate_pattern(parent_1[0], data)
+
+                    parent_2[0] = random_mutation(events, parent_2[0])
+                    parent_2[1] = evaluate_pattern(parent_2[0], data)
+
                 new_poblation.append([parent_1[0], parent_1[1]])
                 new_poblation.append([parent_2[0], parent_1[1]])
 
@@ -62,7 +71,7 @@ def random_mutation(events: list, parent: str) -> str:
 
     # Debemos evitar que al mutar se mantenga el mismo evento, para así generar cambio
     while new_event == parent[index_to_mutate]:
-        new_event = random.randint(0, len(events) - 1)
+        new_event = events[random.randint(0, len(events) - 1)]
 
     new_parent = parent.replace(parent[index_to_mutate], new_event, replaces_count)
 
@@ -238,7 +247,7 @@ def main():
 
     it += 1
     while it <= n_generations:
-        poblation = apply_genetic_operator(poblation, k, c_prob, m_prob, data)
+        poblation = apply_genetic_operator(poblation, k, c_prob, m_prob, data, old_events)
 
         if verbose:
             print(f"Iteración {it}: {poblation}")
