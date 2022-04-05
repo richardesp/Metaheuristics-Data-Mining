@@ -5,7 +5,7 @@ from functools import lru_cache
 import enum
 import string
 
-
+""
 def apply_tournament(poblation: list, k: int) -> str:
     candidates = []
 
