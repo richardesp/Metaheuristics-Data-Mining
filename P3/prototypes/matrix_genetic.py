@@ -5,6 +5,26 @@ from functools import lru_cache
 import enum
 import string
 
+def take_second(elem):
+    return elem[1]
+
+
+def find_worst(bests_individuals: list):
+
+    worst = 1
+    for x in range(bests_individuals):
+        if worst > bests_individuals[x, 1]:
+            worst = bests_individuals[x, 1]
+    return worst
+
+def find_bests(poblation: list, bests_individuals: list):
+    #cuando se introduce un elemento en la élite se elimina de la población
+    for x in range(poblation):
+        if find_worst(bests_individuals) < x[1]:
+            bests_individuals[9] = x
+            bests_individuals = sorted(bests_individuals, reverse=True, key= take_second)
+
+
 
 def apply_tournament(poblation: list, k: int) -> str:
     candidates = []
@@ -27,7 +47,7 @@ def apply_tournament(poblation: list, k: int) -> str:
     return best_pattern
 
 
-def apply_genetic_operator(poblation: list, k: int, c_prob: float, m_prob: float, data: list, events: list, bests_individuals: list, bests_individuals_rate: list) -> list:
+def apply_genetic_operator(poblation: list, k: int, c_prob: float, m_prob: float, data: list, events: list) -> list:
     CUT_1_CROSS = True
     new_poblation = []
 
@@ -44,56 +64,8 @@ def apply_genetic_operator(poblation: list, k: int, c_prob: float, m_prob: float
                 new_child = cut_1_cross(parent_1[0], parent_2[0])  # Le pasamos el patrón en cuestión
                 new_poblation.append([new_child, evaluate_pattern(new_child, data)])
 
-                if evaluate_pattern(new_child, data) > bests_individuals_rate[0] and new_child != bests_individuals[0]:
-
-                    bests_individuals_rate[2] = bests_individuals_rate[1]
-                    bests_individuals_rate[1] = bests_individuals_rate[0]
-                    bests_individuals_rate[0] = evaluate_pattern(new_child, data)
-
-                    bests_individuals[2] = bests_individuals[1]
-                    bests_individuals[1] = bests_individuals[0]
-                    bests_individuals[0] = new_child
-
-                elif evaluate_pattern(new_child, data) > bests_individuals_rate[1] and new_child != bests_individuals[1]:
-
-                    bests_individuals_rate[2] = bests_individuals_rate[1]
-                    bests_individuals_rate[1] = evaluate_pattern(new_child, data)
-
-                    bests_individuals[2] = bests_individuals[1]
-                    bests_individuals[1] = new_child
-
-                elif evaluate_pattern(new_child, data) > bests_individuals_rate[2] and new_child != bests_individuals[2]:
-
-                    bests_individuals_rate[2] = evaluate_pattern(new_child, data)
-
-                    bests_individuals[2] = new_child
-
                 new_child = cut_1_cross(parent_2[0], parent_1[0])
                 new_poblation.append([new_child, evaluate_pattern(new_child, data)])
-
-                if evaluate_pattern(new_child, data) > bests_individuals_rate[0] and new_child != bests_individuals[0]:
-
-                    bests_individuals_rate[2] = bests_individuals_rate[1]
-                    bests_individuals_rate[1] = bests_individuals_rate[0]
-                    bests_individuals_rate[0] = evaluate_pattern(new_child, data)
-
-                    bests_individuals[2] = bests_individuals[1]
-                    bests_individuals[1] = bests_individuals[0]
-                    bests_individuals[0] = new_child
-
-                elif evaluate_pattern(new_child, data) > bests_individuals_rate[1] and new_child != bests_individuals[1]:
-
-                    bests_individuals_rate[2] = bests_individuals_rate[1]
-                    bests_individuals_rate[1] = evaluate_pattern(new_child, data)
-
-                    bests_individuals[2] = bests_individuals[1]
-                    bests_individuals[1] = new_child
-
-                elif evaluate_pattern(new_child, data) > bests_individuals_rate[2] and new_child != bests_individuals[2]:
-
-                    bests_individuals_rate[2] = evaluate_pattern(new_child, data)
-
-                    bests_individuals[2] = new_child
 
             else:
 
@@ -101,57 +73,6 @@ def apply_genetic_operator(poblation: list, k: int, c_prob: float, m_prob: float
                 if random.uniform(0, 1) <= m_prob:
                     parent_1[0] = random_mutation(events, parent_1[0])
                     parent_1[1] = evaluate_pattern(parent_1[0], data)
-
-                    if parent_1[1] > bests_individuals_rate[0] and parent_1[0] != bests_individuals[0]:
-
-                        bests_individuals_rate[2] = bests_individuals_rate[1]
-                        bests_individuals_rate[1] = bests_individuals_rate[0]
-                        bests_individuals_rate[0] = parent_1[1]
-
-                        bests_individuals[2] = bests_individuals[1]
-                        bests_individuals[1] = bests_individuals[0]
-                        bests_individuals[0] = parent_1[0]
-
-                    elif parent_1[1] > bests_individuals_rate[1] and parent_1[0] != bests_individuals[1]:
-
-                        bests_individuals_rate[2] = bests_individuals_rate[1]
-                        bests_individuals_rate[1] = parent_1[1]
-
-                        bests_individuals[2] = bests_individuals[1]
-                        bests_individuals[1] = parent_1[0]
-
-                    elif parent_1[1] > bests_individuals_rate[2] and parent_1[0] != bests_individuals[2]:
-
-                        bests_individuals_rate[2] = parent_1[1]
-
-                        bests_individuals[2] = parent_1[0]
-
-                    parent_2[0] = random_mutation(events, parent_2[0])
-                    parent_2[1] = evaluate_pattern(parent_2[0], data)
-
-                    if parent_2[1] > bests_individuals_rate[0] and parent_2[0] != bests_individuals[0]:
-
-                        bests_individuals_rate[2] = bests_individuals_rate[1]
-                        bests_individuals_rate[1] = bests_individuals_rate[0]
-                        bests_individuals_rate[0] = parent_2[1]
-
-                        bests_individuals[2] = bests_individuals[1]
-                        bests_individuals[1] = bests_individuals[0]
-                        bests_individuals[0] = parent_2[0]
-
-                    elif parent_2[1] > bests_individuals_rate[1] and parent_2[0] != bests_individuals[1]:
-
-                        bests_individuals_rate[2] = bests_individuals_rate[1]
-                        bests_individuals_rate[1] = parent_2[1]
-
-                        bests_individuals[2] = bests_individuals[1]
-                        bests_individuals[1] = parent_2[0]
-
-                    elif parent_2[1] > bests_individuals_rate[2] and parent_2[0] != bests_individuals[2]:
-
-                        bests_individuals_rate[2] = parent_2[1]
-
-                        bests_individuals[2] = parent_2[0]
 
                 new_poblation.append([parent_1[0], parent_1[1]])
 
@@ -283,7 +204,7 @@ def exist_pattern(pattern: str, patient: tuple) -> bool:
 
     return index_pattern == -1
 
-
+@lru_cache(maxsize=65536)
 def evaluate_pattern(pattern: str, data: tuple) -> float:
     # EJECUTAR DE PRIMERA EN EL PRIMER BLOQUE DE COLAB PARA CACHEAR RAPIDAMENTE LA INFO
     frequency = 0
@@ -320,56 +241,34 @@ def read_dataset(path: str) -> tuple:
 
 
 def main():
+    start = time.time()
     verbose = True  # Modo verbose para imprimir
 
     data = read_dataset('../datasets/dataset_100_500.txt')
     events = process_events(data)  # Conjunto de eventos posibles para así poder generar patrones aleatorios
     pattern_length = 7
     n_solutions = 20
-    n_generations = 100
+    n_generations = 1000
     c_prob = .7
-    m_prob = .5
+    m_prob = .2
     k = 3
     poblation = []
 
     old_events = events.copy()  # Copia previa de los eventos dado que se van a eliminar en hill Climbing
     bests_individuals = []
     #creo unicamente tres espacios y los relleno de basura que luego iremos cambiando para guardar en ellos las mejores soluciones
-    bests_individuals.append(None)
-    bests_individuals.append(None)
-    bests_individuals.append(None)
 
-    bests_individuals_rate = []
-    bests_individuals_rate.append(0)
-    bests_individuals_rate.append(0)
-    bests_individuals_rate.append(0)
-
+    """
+    n_bests = 10
+    
+    for _ in n_bests:
+        bests_individuals.append([None, 0])
+    """
     for _ in range(n_solutions):
         random_pattern = create_random_pattern_hill_climbing(events, pattern_length, data, old_events)
         poblation.append([random_pattern, evaluate_pattern(random_pattern, data)])
-        #para el elitismo guardamos la mejor solucion de la primera poblacion en una variable
-        if evaluate_pattern( random_pattern, data ) > bests_individuals_rate[0] and random_pattern != bests_individuals[0]:
+        #bests_individuals = find_bests(poblation, bests_individuals)
 
-            bests_individuals_rate[2] = bests_individuals_rate[1]
-            bests_individuals_rate[1] = bests_individuals_rate[0]
-            bests_individuals_rate[0] = evaluate_pattern( random_pattern, data )
-
-            bests_individuals[2] = bests_individuals[1]
-            bests_individuals[1] = bests_individuals[0]
-            bests_individuals[0] = random_pattern
-
-        elif evaluate_pattern( random_pattern, data ) > bests_individuals_rate[1] and random_pattern != bests_individuals[1]:
-
-            bests_individuals_rate[2] = bests_individuals_rate[1]
-            bests_individuals_rate[1] = evaluate_pattern( random_pattern, data )
-
-            bests_individuals[2] = bests_individuals[1]
-            bests_individuals[1] = random_pattern
-
-        elif evaluate_pattern(random_pattern, data) > bests_individuals_rate[2] and random_pattern != bests_individuals[2]:
-            bests_individuals_rate[2] = evaluate_pattern( random_pattern, data )
-
-            bests_individuals[2] = random_pattern
 
     it = 1
 
@@ -378,16 +277,20 @@ def main():
 
     it += 1
     while it <= n_generations:
-        poblation = apply_genetic_operator(poblation, k, c_prob, m_prob, data, old_events, bests_individuals, bests_individuals_rate)
+        poblation = apply_genetic_operator(poblation, k, c_prob, m_prob, data, old_events)
 
         if verbose:
             print(f"Iteración {it}: {poblation}")
 
         it += 1
 
+    """
     for x in range( len( bests_individuals ) ):
         print(f"El individuo top {x} es: {bests_individuals[x]} con una frecuencia de aparicion de: {bests_individuals_rate[x]}")
+    """
+    end = time.time()
 
+    print(f"{(end - start)*1000}")
 
     """
     for index in range(len(data)):
