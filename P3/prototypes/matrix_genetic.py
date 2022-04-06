@@ -132,28 +132,32 @@ def create_random_pattern_hill_climbing_with_roulette(events: list, length: int,
     while count < length:
         frequencies_sum = float(0)
         current_posible_patterns = []
+        normalized_frequencies = []
 
         for item in events:
             current_frequency = evaluate_pattern(pattern + item, data)
-            current_posible_patterns.append([pattern + item, current_frequency])
+            current_posible_patterns.append(pattern + item)
+            normalized_frequencies.append(current_frequency)
 
             frequencies_sum += current_frequency
 
-        # Si no he seleccionado ningun patron en la ruleta selecciono uno aleatorio
-        posible_pattern_selected = False
-
         # Tengo ya los posibles eventos para realizar el torneo mediante ruleta
-        for posible_pattern in current_posible_patterns:
 
-            # Cogeré el elemento con una probabilidad entre la suma de las posibles
-            if (frequencies_sum != 0) and (random.uniform(0, 1) <= (posible_pattern[1] / frequencies_sum)):
-                posible_pattern_selected = True
-                pattern = posible_pattern[0]
+        # Puede ocurrir que todos los eventos sean nulos, en ese caso me da igual cual seleccionar
+        if frequencies_sum > 0:
 
-                # Terminamos de ejecutar puesto que ya hemos agregado el patrón al ganar la ruleta
-                break
+            # Una vez tenemos las frecuencias normalizamos para realizar la ruleta
+            normalized_frequencies = [frequency / frequencies_sum for frequency in normalized_frequencies]
+            sum_frequencies = sum(normalized_frequencies)
 
-        if not posible_pattern_selected:
+            # Seleccionamos mediante ruleta con una probabilidad dada, el patrón a generar
+            pattern = random.choices(
+                current_posible_patterns,
+                normalized_frequencies,
+                k=1
+            )[0]  # Dado que solamente vamos a seleccionar un patrón en este caso
+
+        else:
             pattern += random.choice(events)
 
         count = count + 1
@@ -297,7 +301,7 @@ def main():
     events = process_events(data)  # Conjunto de eventos posibles para así poder generar patrones aleatorios
     pattern_length = 7
     n_solutions = 100
-    n_generations = 1
+    n_generations = 100
     c_prob = .7
     m_prob = .2
     k = 3
