@@ -5,25 +5,25 @@ from functools import lru_cache
 import enum
 import string
 
+
 def take_second(elem):
     return elem[1]
 
 
 def find_worst(bests_individuals: list):
-
     worst = 1
-    for x in range(bests_individuals):
+    for x in range(len(bests_individuals)):
         if worst > bests_individuals[x, 1]:
             worst = bests_individuals[x, 1]
     return worst
 
+
 def find_bests(poblation: list, bests_individuals: list):
-    #cuando se introduce un elemento en la élite se elimina de la población
-    for x in range(poblation):
+    # cuando se introduce un elemento en la élite se elimina de la población
+    for x in poblation:
         if find_worst(bests_individuals) < x[1]:
             bests_individuals[9] = x
-            bests_individuals = sorted(bests_individuals, reverse=True, key= take_second)
-
+            bests_individuals = sorted(bests_individuals, reverse=True, key=take_second)
 
 
 def apply_tournament(poblation: list, k: int) -> str:
@@ -61,22 +61,28 @@ def apply_genetic_operator(poblation: list, k: int, c_prob: float, m_prob: float
             parent_2 = apply_tournament(poblation_2, k)
 
             if random.uniform(0, 1) <= c_prob:
-                new_child = cut_1_cross(parent_1[0], parent_2[0])  # Le pasamos el patrón en cuestión
-                new_poblation.append([new_child, evaluate_pattern(new_child, data)])
+                child_1 = cut_1_cross(parent_1[0], parent_2[0])  # Le pasamos el patrón en cuestión
+                # new_poblation.append([new_child, evaluate_pattern(new_child, data)])
 
-                new_child = cut_1_cross(parent_2[0], parent_1[0])
-                new_poblation.append([new_child, evaluate_pattern(new_child, data)])
+                child_2 = cut_1_cross(parent_2[0], parent_1[0])
+                # new_poblation.append([new_child, evaluate_pattern(new_child, data)])
 
-            else:
+                parent_1[0] = child_1
+                parent_2[0] = child_2
 
-                # En caso de que no se hayan creado dos hijos, los dos padres pueden mutar
-                if random.uniform(0, 1) <= m_prob:
-                    parent_1[0] = random_mutation(events, parent_1[0])
-                    parent_1[1] = evaluate_pattern(parent_1[0], data)
+            # Probabilidad de mutar el primer padre
+            if random.uniform(0, 1) <= m_prob:
+                parent_1[0] = random_mutation(events, parent_1[0])
+                # parent_1[1] = evaluate_pattern(parent_1[0], data) No es necesario
 
-                new_poblation.append([parent_1[0], parent_1[1]])
+            # Probabilidad de mutar el segundo padre
+            if random.uniform(0, 1) <= m_prob:
+                parent_2[0] = random_mutation(events, parent_2[0])
+                # parent_2[1] = evaluate_pattern(parent_2[0], data) No es necesario
 
-                new_poblation.append([parent_2[0], parent_2[1]])
+            # Agregamos los individuos resultantes y los evaluamos
+            new_poblation.append([parent_1[0], evaluate_pattern(parent_1[0], data)])
+            new_poblation.append([parent_2[0], evaluate_pattern(parent_2[0], data)])
 
     return new_poblation
 
@@ -204,6 +210,7 @@ def exist_pattern(pattern: str, patient: tuple) -> bool:
 
     return index_pattern == -1
 
+
 @lru_cache(maxsize=65536)
 def evaluate_pattern(pattern: str, data: tuple) -> float:
     # EJECUTAR DE PRIMERA EN EL PRIMER BLOQUE DE COLAB PARA CACHEAR RAPIDAMENTE LA INFO
@@ -248,7 +255,7 @@ def main():
     events = process_events(data)  # Conjunto de eventos posibles para así poder generar patrones aleatorios
     pattern_length = 7
     n_solutions = 20
-    n_generations = 1000
+    n_generations = 100
     c_prob = .7
     m_prob = .2
     k = 3
@@ -256,19 +263,17 @@ def main():
 
     old_events = events.copy()  # Copia previa de los eventos dado que se van a eliminar en hill Climbing
     bests_individuals = []
-    #creo unicamente tres espacios y los relleno de basura que luego iremos cambiando para guardar en ellos las mejores soluciones
+    # creo unicamente tres espacios y los relleno de basura que luego iremos cambiando para guardar en ellos las mejores soluciones
 
-    """
     n_bests = 10
-    
-    for _ in n_bests:
+
+    for _ in range(n_bests):
         bests_individuals.append([None, 0])
-    """
+
     for _ in range(n_solutions):
         random_pattern = create_random_pattern_hill_climbing(events, pattern_length, data, old_events)
         poblation.append([random_pattern, evaluate_pattern(random_pattern, data)])
-        #bests_individuals = find_bests(poblation, bests_individuals)
-
+        # bests_individuals = find_bests(poblation, bests_individuals)
 
     it = 1
 
@@ -284,67 +289,8 @@ def main():
 
         it += 1
 
-    """
-    for x in range( len( bests_individuals ) ):
-        print(f"El individuo top {x} es: {bests_individuals[x]} con una frecuencia de aparicion de: {bests_individuals_rate[x]}")
-    """
     end = time.time()
-
-    print(f"{(end - start)*1000}")
-
-    """
-    for index in range(len(data)):
-        print(f"Paciente {index}: {data[index]}")
-
-    pattern = create_random_pattern(events, pattern_length)
-    pattern = create_random_valid_pattern(events, pattern_length, data)
-    # pattern = create_random_pattern_hill_climbing(events, pattern_length, data)
-
-    print(f"El patrón {pattern} aparece con una frecuencia de {evaluate_pattern(pattern, data)}")
-
-    patterns_list = []
-
-    # No puedo poner más de 20 porque solamente tengo 20 eventos
-    nSoluciones = 20
-    nGeneraciones = 7000
-
-    print(f"Posibles eventos {events}")
-
-    aux_events = events.copy()  # Creo una copia para iterar en el bucle, dado que iré borrando para evitar réplicas de individuos
-
-    for _ in range(nSoluciones):
-        patterns_list.append(create_random_pattern_hill_climbing(events, pattern_length, data, aux_events))
-
-    for pattern in patterns_list:
-        print(f"Patrón {pattern} aparece con una frecuencia de {evaluate_pattern(pattern, data)}")
-
-    """
-
-    """
-    start = time.time()
-    for _ in range(nGeneraciones):
-        for pattern in patterns_list:
-            # print(f"Patrón {pattern} -> {evaluate_pattern(pattern, data)}")
-            evaluate_pattern(pattern, data)
-    end = time.time()
-    """
-
-    # print(f"Tiempo en evaluar {nSoluciones} patrones en {nGeneraciones} generaciones: {(end - start) * 1000} ms")
-
-    """
-    pattern = 'AFCCCEE'
-    print(f"{pattern} {evaluate_pattern(pattern, data)}")
-
-    # SELECCIONAR POBLACIÓN INICIAL CON HILL CLIMBING
-
-    # EJECUTO N GENERACIONES
-    # HAGO CRUCE CON UNA PROB DE X
-    # HAGO MUT CON UNA PROB DE Y
-
-    parent = create_random_pattern(aux_events, pattern_length)
-    print(parent)
-    print(random_mutation(aux_events, parent))
-    """
+    print(f"Tiempo de ejecución: {(end - start) * 1000} ms")
 
 
 if __name__ == "__main__":
