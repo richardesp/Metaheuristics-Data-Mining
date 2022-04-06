@@ -119,6 +119,48 @@ def cut_1_cross(parent_1: str, parent_2: str) -> str:
     return child
 
 
+def create_random_pattern_hill_climbing_with_roulette(events: list, length: int, data: list) -> str:
+    pattern = ''
+    count = 1
+
+    event = random.choice(events)
+
+    # Agregamos el evento inicial
+    pattern += event
+
+    # Buscamos todos los mejores vecinos para aplicar una ruleta
+    while count < length:
+        frequencies_sum = float(0)
+        current_posible_patterns = []
+
+        for item in events:
+            current_frequency = evaluate_pattern(pattern + item, data)
+            current_posible_patterns.append([pattern + item, current_frequency])
+
+            frequencies_sum += current_frequency
+
+        # Si no he seleccionado ningun patron en la ruleta selecciono uno aleatorio
+        posible_pattern_selected = False
+
+        # Tengo ya los posibles eventos para realizar el torneo mediante ruleta
+        for posible_pattern in current_posible_patterns:
+
+            # Cogeré el elemento con una probabilidad entre la suma de las posibles
+            if (frequencies_sum != 0) and (random.uniform(0, 1) <= (posible_pattern[1] / frequencies_sum)):
+                posible_pattern_selected = True
+                pattern = posible_pattern[0]
+
+                # Terminamos de ejecutar puesto que ya hemos agregado el patrón al ganar la ruleta
+                break
+
+        if not posible_pattern_selected:
+            pattern += random.choice(events)
+
+        count = count + 1
+
+    return pattern
+
+
 def create_random_pattern_hill_climbing(events: list, length: int, data: list, aux_events: list) -> str:
     pattern = ''
     count = 1
@@ -254,8 +296,8 @@ def main():
     data = read_dataset('../datasets/dataset_100_500.txt')
     events = process_events(data)  # Conjunto de eventos posibles para así poder generar patrones aleatorios
     pattern_length = 7
-    n_solutions = 20
-    n_generations = 100
+    n_solutions = 100
+    n_generations = 1
     c_prob = .7
     m_prob = .2
     k = 3
@@ -271,7 +313,7 @@ def main():
         bests_individuals.append([None, 0])
 
     for _ in range(n_solutions):
-        random_pattern = create_random_pattern_hill_climbing(events, pattern_length, data, old_events)
+        random_pattern = create_random_pattern_hill_climbing_with_roulette(events, pattern_length, data)
         poblation.append([random_pattern, evaluate_pattern(random_pattern, data)])
         # bests_individuals = find_bests(poblation, bests_individuals)
 
