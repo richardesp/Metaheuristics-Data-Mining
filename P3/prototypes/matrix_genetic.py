@@ -5,14 +5,19 @@ from functools import lru_cache
 import enum
 import string
 
+def not_the_same( example , bests_individuals: list):
+    for iterator in range(len(bests_individuals)):
+        if example == bests_individuals[iterator]:
+            return False
+    return True
 
 def find_bests(poblation: list, bests_individuals: list):
     # cuando se introduce un elemento en la élite se elimina de la población
     for iterator in range(len(poblation)):
-        if bests_individuals[9][1] < poblation[iterator][1]:
+        if bests_individuals[9][1] < poblation[iterator][1] and not_the_same(poblation[iterator], bests_individuals):
             bests_individuals[9] = poblation[iterator]
             bests_individuals = sorted(bests_individuals, reverse=True, key=lambda x: x[1])
-
+    return bests_individuals
 
 def apply_tournament(poblation: list, k: int) -> str:
     candidates = []
@@ -326,6 +331,9 @@ def main():
     end = time.time()
     print(f"Tiempo de ejecución: {(end - start) * 1000} ms")
 
+    print(f"A continuacion se mostrarán los 10 mejores patrones encontrados:")
+    for iterator in range(n_bests):
+        print(f"El top {iterator+1} es el patron: {bests_individuals[iterator][0]} con una frecuencia de aparicion de: {bests_individuals[iterator][1]}")
 
 if __name__ == "__main__":
     main()
