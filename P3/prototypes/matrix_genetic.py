@@ -6,24 +6,12 @@ import enum
 import string
 
 
-def take_second(elem):
-    return elem[1]
-
-
-def find_worst(bests_individuals: list):
-    worst = 1
-    for x in range(len(bests_individuals)):
-        if worst > bests_individuals[x, 1]:
-            worst = bests_individuals[x, 1]
-    return worst
-
-
 def find_bests(poblation: list, bests_individuals: list):
     # cuando se introduce un elemento en la élite se elimina de la población
-    for x in poblation:
-        if find_worst(bests_individuals) < x[1]:
-            bests_individuals[9] = x
-            bests_individuals = sorted(bests_individuals, reverse=True, key=take_second)
+    for iterator in range(len(poblation)):
+        if bests_individuals[9][1] < poblation[iterator][1]:
+            bests_individuals[9] = poblation[iterator]
+            bests_individuals = sorted(bests_individuals, reverse=True, key=lambda x: x[1])
 
 
 def apply_tournament(poblation: list, k: int) -> str:
@@ -319,8 +307,8 @@ def main():
     for _ in range(n_solutions):
         random_pattern = create_random_pattern_hill_climbing_with_roulette(events, pattern_length, data)
         poblation.append([random_pattern, evaluate_pattern(random_pattern, data)])
-        # bests_individuals = find_bests(poblation, bests_individuals)
 
+    bests_individuals = find_bests(poblation, bests_individuals)
     it = 1
 
     if verbose:
@@ -329,7 +317,7 @@ def main():
     it += 1
     while it <= n_generations:
         poblation = apply_genetic_operator(poblation, k, c_prob, m_prob, data, old_events)
-
+        bests_individuals = find_bests(poblation, bests_individuals)
         if verbose:
             print(f"Iteración {it}: {poblation}")
 
