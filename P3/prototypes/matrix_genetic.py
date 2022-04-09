@@ -5,19 +5,23 @@ from functools import lru_cache
 import enum
 import string
 
-def not_the_same( example , bests_individuals: list):
+
+def not_the_same(example, bests_individuals: list):
     for iterator in range(len(bests_individuals)):
         if example == bests_individuals[iterator]:
             return False
     return True
 
+
 def find_bests(poblation: list, bests_individuals: list):
     # cuando se introduce un elemento en la élite se elimina de la población
     for iterator in range(len(poblation)):
-        if bests_individuals[9][1] < poblation[iterator][1] and not_the_same(poblation[iterator], bests_individuals):
-            bests_individuals[9] = poblation[iterator]
+        if bests_individuals[bests_individuals.__len__() - 1][1] < poblation[iterator][1] and not_the_same(
+                poblation[iterator], bests_individuals):
+            bests_individuals[bests_individuals.__len__() - 1] = poblation[iterator].copy()
             bests_individuals = sorted(bests_individuals, reverse=True, key=lambda x: x[1])
     return bests_individuals
+
 
 def apply_tournament(poblation: list, k: int) -> str:
     candidates = []
@@ -294,9 +298,9 @@ def main():
     events = process_events(data)  # Conjunto de eventos posibles para así poder generar patrones aleatorios
     pattern_length = 7
     n_solutions = 100
-    n_generations = 100
+    n_generations = 1000
     c_prob = .7
-    m_prob = .2
+    m_prob = .5
     k = 3
     poblation = []
 
@@ -304,13 +308,13 @@ def main():
     bests_individuals = []
     # creo unicamente tres espacios y los relleno de basura que luego iremos cambiando para guardar en ellos las mejores soluciones
 
-    n_bests = 10
+    n_bests = 20
 
     for _ in range(n_bests):
         bests_individuals.append([None, 0])
 
     for _ in range(n_solutions):
-        random_pattern = create_random_pattern_hill_climbing_with_roulette(events, pattern_length, data)
+        random_pattern = create_random_pattern(events, pattern_length)
         poblation.append([random_pattern, evaluate_pattern(random_pattern, data)])
 
     bests_individuals = find_bests(poblation, bests_individuals)
@@ -333,7 +337,12 @@ def main():
 
     print(f"A continuacion se mostrarán los 10 mejores patrones encontrados:")
     for iterator in range(n_bests):
-        print(f"El top {iterator+1} es el patron: {bests_individuals[iterator][0]} con una frecuencia de aparicion de: {bests_individuals[iterator][1]}")
+        print(
+            f"El top {iterator + 1} es el patron: {bests_individuals[iterator][0]} con una frecuencia de aparicion de: {bests_individuals[iterator][1]}")
+
+    frecuencia = evaluate_pattern("AFFCCCC", data)
+    print(f"El patron AFFCCCC tiene una frecuencia de: {frecuencia}")
+
 
 if __name__ == "__main__":
     main()
