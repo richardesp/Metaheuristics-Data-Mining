@@ -21,7 +21,7 @@ def count_letters(pattern: string):
     aux_pattern = ""
     for letter in pattern:
         if not exists_in(aux_pattern, letter):
-            aux_pattern = aux_pattern+letter
+            aux_pattern = aux_pattern + letter
             count = count + 1
 
     return count
@@ -49,9 +49,10 @@ def not_the_same(example, bests_individuals: list):
 def find_bests(poblation: list, bests_individuals: list):
     # cuando se introduce un elemento en la élite se elimina de la población
     for iterator in range(len(poblation)):
-        if bests_individuals[bests_individuals.__len__() - 1][1] <= poblation[iterator][1] and not_the_same(poblation[iterator], bests_individuals):
+        if bests_individuals[bests_individuals.__len__() - 1][1] <= poblation[iterator][1] and not_the_same(
+                poblation[iterator], bests_individuals):
             position = is_equal(poblation[iterator].copy(), bests_individuals)
-            if  position != None and position >= 0:
+            if position != None and position >= 0:
                 bests_individuals[position] = poblation[iterator].copy()
             elif position == None:
                 bests_individuals[bests_individuals.__len__() - 1] = poblation[iterator].copy()
@@ -334,9 +335,9 @@ def main():
     events = process_events(data)  # Conjunto de eventos posibles para así poder generar patrones aleatorios
     pattern_length = 7
     n_solutions = 100
-    n_generations = 100
-    c_prob = .7
-    m_prob = .3
+    n_generations = 10000
+    c_prob = .9
+    m_prob = .5
     k = 3
     poblation = []
 
@@ -344,7 +345,7 @@ def main():
     bests_individuals = []
     # creo unicamente tres espacios y los relleno de basura que luego iremos cambiando para guardar en ellos las mejores soluciones
 
-    n_bests = 10
+    n_bests = 100
 
     for _ in range(n_bests):
         bests_individuals.append(["A", -1])
@@ -375,9 +376,6 @@ def main():
     for iterator in range(n_bests):
         print(
             f"El top {iterator + 1} es el patron: {bests_individuals[iterator][0]} con una frecuencia de aparicion de: {bests_individuals[iterator][1]}")
-
-    frecuencia = evaluate_pattern("AFFCCCC", data)
-    print(f"El patron AFFCCCC tiene una frecuencia de: {frecuencia}")
 
 
 if __name__ == "__main__":
