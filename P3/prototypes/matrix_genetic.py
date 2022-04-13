@@ -5,25 +5,59 @@ from functools import lru_cache
 import enum
 import string
 
-
-def take_second(elem):
-    return elem[1]
+import char as char
 
 
-def find_worst(bests_individuals: list):
-    worst = 1
-    for x in range(len(bests_individuals)):
-        if worst > bests_individuals[x, 1]:
-            worst = bests_individuals[x, 1]
-    return worst
+def exists_in(pattern: string, letter: char):
+    for iterator in pattern:
+        if letter == iterator:
+            return True
+
+    return False
+
+
+def count_letters(pattern: string):
+    count = 0
+    aux_pattern = ""
+    for letter in pattern:
+        if not exists_in(aux_pattern, letter):
+            aux_pattern = aux_pattern + letter
+            count = count + 1
+
+    return count
+
+
+def is_equal(pattern, bests_individuals):
+    final_position = None
+    for position in range(len(bests_individuals)):
+        if pattern[1] == bests_individuals[position][1]:
+            if count_letters(pattern[0]) > count_letters(bests_individuals[position][0]):
+                final_position = position
+            else:
+                final_position = -1
+
+    return final_position
+
+
+def not_the_same(example, bests_individuals: list):
+    for iterator in range(len(bests_individuals)):
+        if example == bests_individuals[iterator]:
+            return False
+    return True
 
 
 def find_bests(poblation: list, bests_individuals: list):
     # cuando se introduce un elemento en la élite se elimina de la población
-    for x in poblation:
-        if find_worst(bests_individuals) < x[1]:
-            bests_individuals[9] = x
-            bests_individuals = sorted(bests_individuals, reverse=True, key=take_second)
+    for iterator in range(len(poblation)):
+        if bests_individuals[bests_individuals.__len__() - 1][1] <= poblation[iterator][1] and not_the_same(
+                poblation[iterator], bests_individuals):
+            position = is_equal(poblation[iterator].copy(), bests_individuals)
+            if position != None and position >= 0:
+                bests_individuals[position] = poblation[iterator].copy()
+            elif position == None:
+                bests_individuals[bests_individuals.__len__() - 1] = poblation[iterator].copy()
+                bests_individuals = sorted(bests_individuals, reverse=True, key=lambda x: x[1])
+    return bests_individuals
 
 
 def apply_tournament(poblation: list, k: int) -> str:
@@ -301,9 +335,9 @@ def main():
     events = process_events(data)  # Conjunto de eventos posibles para así poder generar patrones aleatorios
     pattern_length = 7
     n_solutions = 100
-    n_generations = 100
-    c_prob = .7
-    m_prob = .2
+    n_generations = 10000
+    c_prob = .9
+    m_prob = .5
     k = 3
     poblation = []
 
@@ -311,16 +345,16 @@ def main():
     bests_individuals = []
     # creo unicamente tres espacios y los relleno de basura que luego iremos cambiando para guardar en ellos las mejores soluciones
 
-    n_bests = 10
+    n_bests = 100
 
     for _ in range(n_bests):
-        bests_individuals.append([None, 0])
+        bests_individuals.append(["A", -1])
 
     for _ in range(n_solutions):
-        random_pattern = create_random_pattern_hill_climbing_with_roulette(events, pattern_length, data)
+        random_pattern = create_random_pattern(events, pattern_length)
         poblation.append([random_pattern, evaluate_pattern(random_pattern, data)])
-        # bests_individuals = find_bests(poblation, bests_individuals)
 
+    bests_individuals = find_bests(poblation, bests_individuals)
     it = 1
 
     if verbose:
@@ -329,7 +363,7 @@ def main():
     it += 1
     while it <= n_generations:
         poblation = apply_genetic_operator(poblation, k, c_prob, m_prob, data, old_events)
-
+        bests_individuals = find_bests(poblation, bests_individuals)
         if verbose:
             print(f"Iteración {it}: {poblation}")
 
@@ -337,6 +371,11 @@ def main():
 
     end = time.time()
     print(f"Tiempo de ejecución: {(end - start) * 1000} ms")
+
+    print(f"A continuacion se mostrarán los 10 mejores patrones encontrados:")
+    for iterator in range(n_bests):
+        print(
+            f"El top {iterator + 1} es el patron: {bests_individuals[iterator][0]} con una frecuencia de aparicion de: {bests_individuals[iterator][1]}")
 
 
 if __name__ == "__main__":
