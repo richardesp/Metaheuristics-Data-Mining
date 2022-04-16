@@ -375,7 +375,7 @@ def main():
 
     ########## PARÁMETROS DEL PROBLEMA PRINCIPAL A RESOLVER ##########
     pattern_length = 15
-    n_generations = 1000
+    n_generations = 100
     c_prob = .7
     m_prob = .4
     k = 3
@@ -384,6 +384,8 @@ def main():
     start = time.time()
     first_genetic = []
     second_genetic = []
+
+    # Combinaremos por cada invidiuo de cada población dos individuos
     sub_patterns_n_solutions = 100
     n_solutions = sub_patterns_n_solutions * 2
 
