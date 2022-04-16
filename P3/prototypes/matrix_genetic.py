@@ -333,11 +333,11 @@ def main():
 
     data = read_dataset('../datasets/dataset_100_500.txt')
     events = process_events(data)  # Conjunto de eventos posibles para así poder generar patrones aleatorios
-    pattern_length = 7
-    n_solutions = 100
-    n_generations = 10000
-    c_prob = .9
-    m_prob = .5
+    pattern_length = 15
+    n_solutions = 200
+    n_generations = 100
+    c_prob = .7
+    m_prob = .4
     k = 3
     poblation = []
 
@@ -345,7 +345,7 @@ def main():
     bests_individuals = []
     # creo unicamente tres espacios y los relleno de basura que luego iremos cambiando para guardar en ellos las mejores soluciones
 
-    n_bests = 100
+    n_bests = 10
 
     for _ in range(n_bests):
         bests_individuals.append(["A", -1])
