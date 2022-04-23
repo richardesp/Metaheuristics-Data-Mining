@@ -27,18 +27,6 @@ def count_letters(pattern: string):
     return count
 
 
-def is_equal(pattern, bests_individuals):
-    final_position = None
-    for position in range(len(bests_individuals)):
-        if pattern[1] == bests_individuals[position][1]:
-            if count_letters(pattern[0]) > count_letters(bests_individuals[position][0]):
-                final_position = position
-            else:
-                final_position = -1
-
-    return final_position
-
-
 def not_the_same(example, bests_individuals: list):
     for iterator in range(len(bests_individuals)):
         if example == bests_individuals[iterator]:
@@ -51,12 +39,10 @@ def find_bests(poblation: list, bests_individuals: list):
     for iterator in range(len(poblation)):
         if bests_individuals[bests_individuals.__len__() - 1][1] <= poblation[iterator][1] and not_the_same(
                 poblation[iterator], bests_individuals):
-            position = is_equal(poblation[iterator].copy(), bests_individuals)
-            if position != None and position >= 0:
-                bests_individuals[position] = poblation[iterator].copy()
-            elif position == None:
-                bests_individuals[bests_individuals.__len__() - 1] = poblation[iterator].copy()
-                bests_individuals = sorted(bests_individuals, reverse=True, key=lambda x: x[1])
+
+            bests_individuals[bests_individuals.__len__() - 1] = poblation[iterator].copy()
+            bests_individuals = sorted(bests_individuals, reverse=True, key=lambda x: x[1])
+
     return bests_individuals
 
 
@@ -333,13 +319,16 @@ def main():
 
     data = read_dataset('../datasets/dataset_100_500.txt')
     events = process_events(data)  # Conjunto de eventos posibles para así poder generar patrones aleatorios
-    pattern_length = 15
+    pattern_length = 7
     n_solutions = 200
     n_generations = 100
-    c_prob = .7
+    c_prob = .9
     m_prob = .4
+
     k = 3
     poblation = []
+
+    fichero = open(f"valores_medios_de_cada_poblacion_con_longitud_{pattern_length}.txt", 'w')
 
     old_events = events.copy()  # Copia previa de los eventos dado que se van a eliminar en hill Climbing
     bests_individuals = []
@@ -350,24 +339,47 @@ def main():
     for _ in range(n_bests):
         bests_individuals.append(["A", -1])
 
+    media = 0
+    aux = 0
+
     for _ in range(n_solutions):
         random_pattern = create_random_pattern(events, pattern_length)
         poblation.append([random_pattern, evaluate_pattern(random_pattern, data)])
 
-    bests_individuals = find_bests(poblation, bests_individuals)
-    it = 1
+    for iterator in range(len(poblation)):
+        media = media + poblation[iterator][1]
+        aux = aux + 1
+        media = media/aux
 
+    bests_individuals = find_bests(poblation, bests_individuals)
+    fichero.write(f"{media}\n")
+    it = 1
     if verbose:
         print(f"Iteración {it}: {poblation}")
 
     it += 1
     while it <= n_generations:
         poblation = apply_genetic_operator(poblation, k, c_prob, m_prob, data, old_events)
+        media = 0
+        aux = 0
+        for iterator in range(len(poblation)):
+            media = media + poblation[iterator][1]
+            aux = aux + 1
+        media = media / aux
+
         bests_individuals = find_bests(poblation, bests_individuals)
+        fichero.write(f"{media}\n")
         if verbose:
             print(f"Iteración {it}: {poblation}")
 
         it += 1
+    for iterator3 in range(bests_individuals.__len__() - 1):
+        for iterator2 in range(iterator3, len(bests_individuals) - 1):
+            if bests_individuals[iterator2][1] == bests_individuals[iterator2 + 1][1] and (
+                    count_letters(bests_individuals[iterator2][0]) < count_letters(bests_individuals[iterator2 + 1][0])):
+                aux = bests_individuals[iterator2 + 1].copy()
+                bests_individuals[iterator2 + 1] = bests_individuals[iterator2].copy()
+                bests_individuals[iterator2] = aux.copy()
 
     end = time.time()
     print(f"Tiempo de ejecución: {(end - start) * 1000} ms")

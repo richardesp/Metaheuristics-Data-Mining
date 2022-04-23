@@ -27,18 +27,6 @@ def count_letters(pattern: string):
     return count
 
 
-def is_equal(pattern, bests_individuals):
-    final_position = None
-    for position in range(len(bests_individuals)):
-        if pattern[1] == bests_individuals[position][1]:
-            if count_letters(pattern[0]) > count_letters(bests_individuals[position][0]):
-                final_position = position
-            else:
-                final_position = -1
-
-    return final_position
-
-
 def not_the_same(example, bests_individuals: list):
     for iterator in range(len(bests_individuals)):
         if example == bests_individuals[iterator]:
@@ -51,12 +39,10 @@ def find_bests(poblation: list, bests_individuals: list):
     for iterator in range(len(poblation)):
         if bests_individuals[bests_individuals.__len__() - 1][1] <= poblation[iterator][1] and not_the_same(
                 poblation[iterator], bests_individuals):
-            position = is_equal(poblation[iterator].copy(), bests_individuals)
-            if position != None and position >= 0:
-                bests_individuals[position] = poblation[iterator].copy()
-            elif position == None:
-                bests_individuals[bests_individuals.__len__() - 1] = poblation[iterator].copy()
-                bests_individuals = sorted(bests_individuals, reverse=True, key=lambda x: x[1])
+
+            bests_individuals[bests_individuals.__len__() - 1] = poblation[iterator].copy()
+            bests_individuals = sorted(bests_individuals, reverse=True, key=lambda x: x[1])
+
     return bests_individuals
 
 
@@ -433,6 +419,14 @@ def main():
             print(f"Iteración {it}: {poblation}")
 
         it += 1
+
+    for iterator3 in range(bests_individuals.__len__() - 1):
+        for iterator2 in range(iterator3, len(bests_individuals) - 1):
+            if bests_individuals[iterator2][1] == bests_individuals[iterator2 + 1][1] and (
+                    count_letters(bests_individuals[iterator2][0]) < count_letters(bests_individuals[iterator2 + 1][0])):
+                aux = bests_individuals[iterator2 + 1].copy()
+                bests_individuals[iterator2 + 1] = bests_individuals[iterator2].copy()
+                bests_individuals[iterator2] = aux.copy()
 
     end = time.time()
     print(f"Tiempo de ejecución: {(end - start) * 1000} ms")
