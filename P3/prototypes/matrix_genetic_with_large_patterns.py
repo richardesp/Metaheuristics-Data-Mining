@@ -437,5 +437,6 @@ def main():
             f"El top {iterator + 1} es el patron: {bests_individuals[iterator][0]} con una frecuencia de aparicion de: {bests_individuals[iterator][1]}")
 
 
+
 if __name__ == "__main__":
     main()
